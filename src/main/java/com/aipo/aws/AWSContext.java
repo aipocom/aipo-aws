@@ -19,11 +19,11 @@
 
 package com.aipo.aws;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
@@ -38,35 +38,41 @@ public class AWSContext {
 
   private AWSCredentials awsCredentials;
 
-  private final String sdbEndpoint;
+  private String sdbEndpoint;
 
-  private final String s3Endpoint;
+  private String s3Endpoint;
 
-  private final String rdsEndpoint;
+  private String rdsEndpoint;
 
-  private final String sqsEndpoint;
+  private String sqsEndpoint;
 
-  private final String snsEndpoint;
+  private String snsEndpoint;
+
+  protected AWSContext(String resourcePath) {
+    setUp(resourcePath, null);
+  }
 
   protected AWSContext(FilterConfig filterConfig) {
-
     String awsCredentialsPath = filterConfig.getInitParameter("awsCredentials");
     if (awsCredentialsPath == null || awsCredentialsPath == "") {
       awsCredentialsPath = DEFAULT_AWSCREDENTIALS_PROPERTIES;
     }
+    setUp(awsCredentialsPath, filterConfig.getServletContext());
+  }
 
+  private void setUp(String resourcePath, ServletContext context) {
     Properties properties = new Properties();
     try {
       InputStream resourceAsStream =
-        filterConfig
-          .getServletContext()
-          .getResourceAsStream(awsCredentialsPath);
+        context == null
+          ? ClassLoader.getSystemResourceAsStream(resourcePath)
+          : context.getResourceAsStream(resourcePath);
       awsCredentials = new PropertiesCredentials(resourceAsStream);
 
       resourceAsStream =
-        filterConfig
-          .getServletContext()
-          .getResourceAsStream(awsCredentialsPath);
+        context == null
+          ? ClassLoader.getSystemResourceAsStream(resourcePath)
+          : context.getResourceAsStream(resourcePath);
       try {
         properties.load(resourceAsStream);
       } finally {
@@ -75,8 +81,8 @@ public class AWSContext {
         } catch (Exception e) {
         }
       }
-    } catch (IOException e) {
-      System.out.println("'" + awsCredentialsPath + "' doesn't load.");
+    } catch (Exception e) {
+      System.out.println("'" + resourcePath + "' doesn't load.");
     }
 
     sdbEndpoint = properties.getProperty("sdbEndpoint");
@@ -84,7 +90,6 @@ public class AWSContext {
     rdsEndpoint = properties.getProperty("rdsEndpoint");
     sqsEndpoint = properties.getProperty("sqsEndpoint");
     snsEndpoint = properties.getProperty("snsEndpoint");
-
   }
 
   /**
