@@ -19,6 +19,8 @@
 
 package com.aipo.aws;
 
+import javax.servlet.ServletContext;
+
 import com.aipo.aws.rds.RDS;
 import com.aipo.aws.s3.S3;
 import com.aipo.aws.simpledb.SimpleDB;
@@ -31,6 +33,14 @@ public class AWSInitializer {
 
   public static final String DEFAULT_AWSCREDENTIALS_PROPERTIES =
     "aws.properties";
+
+  public static void setUp(String resource, ServletContext ServletContext) {
+    AWSContextLocator.set(new AWSContext(resource, ServletContext));
+  }
+
+  public static void setUp(ServletContext ServletContext) {
+    AWSContextLocator.set(new AWSContext(ServletContext));
+  }
 
   public static void setUp(String resource) {
     AWSContextLocator.set(new AWSContext(resource));

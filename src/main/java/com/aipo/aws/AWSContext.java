@@ -52,6 +52,14 @@ public class AWSContext {
     setUp(resourcePath, null);
   }
 
+  protected AWSContext(ServletContext servletContext) {
+    setUp(DEFAULT_AWSCREDENTIALS_PROPERTIES, servletContext);
+  }
+
+  protected AWSContext(String resourcePath, ServletContext servletContext) {
+    setUp(resourcePath, servletContext);
+  }
+
   protected AWSContext(FilterConfig filterConfig) {
     String awsCredentialsPath = filterConfig.getInitParameter("awsCredentials");
     if (awsCredentialsPath == null || awsCredentialsPath == "") {
