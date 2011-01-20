@@ -20,18 +20,22 @@
 package com.aipo.aws;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Properties;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
+import com.aipo.aws.aeb.AEBEnvironmentProperties;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.PropertiesCredentials;
 
 /**
  * 
  */
-public class AWSContext {
+public class AWSContext implements Serializable {
+
+  private static final long serialVersionUID = -6805584882087598678L;
 
   public static final String DEFAULT_AWSCREDENTIALS_PROPERTIES =
     "/WEB-INF/aws.properties";
@@ -75,7 +79,28 @@ public class AWSContext {
         context == null
           ? ClassLoader.getSystemResourceAsStream(resourcePath)
           : context.getResourceAsStream(resourcePath);
-      awsCredentials = new PropertiesCredentials(resourceAsStream);
+
+      final String key = AEBEnvironmentProperties.AWS_ACCESS_KEY_ID;
+      final String secret = AEBEnvironmentProperties.AWS_SECRET_KEY;
+      if (key != null
+        && key.length() > 0
+        && secret != null
+        && secret.length() > 0) {
+        awsCredentials = new AWSCredentials() {
+
+          @Override
+          public String getAWSAccessKeyId() {
+            return key;
+          }
+
+          @Override
+          public String getAWSSecretKey() {
+            return secret;
+          }
+        };
+      } else {
+        awsCredentials = new PropertiesCredentials(resourceAsStream);
+      }
 
       resourceAsStream =
         context == null
