@@ -52,6 +52,8 @@ public class AWSContext implements Serializable {
 
   private String snsEndpoint;
 
+  private String sesEndpoint;
+
   protected AWSContext(String resourcePath) {
     setUp(resourcePath, null);
   }
@@ -123,6 +125,7 @@ public class AWSContext implements Serializable {
     rdsEndpoint = properties.getProperty("rdsEndpoint");
     sqsEndpoint = properties.getProperty("sqsEndpoint");
     snsEndpoint = properties.getProperty("snsEndpoint");
+    sesEndpoint = properties.getProperty("sesEndpoint");
   }
 
   /**
@@ -165,5 +168,12 @@ public class AWSContext implements Serializable {
    */
   public String getSnsEndpoint() {
     return snsEndpoint;
+  }
+
+  /**
+   * @return sesEndpoint
+   */
+  public String getSesEndpoint() {
+    return sesEndpoint;
   }
 }
