@@ -30,6 +30,7 @@ import javax.servlet.ServletResponse;
 
 import com.aipo.aws.rds.RDS;
 import com.aipo.aws.s3.S3;
+import com.aipo.aws.ses.SES;
 import com.aipo.aws.simpledb.SimpleDB;
 import com.aipo.aws.sqs.SQS;
 
@@ -67,6 +68,7 @@ public class AWSFilter implements Filter {
       S3.resetThreadClient();
       RDS.resetThreadClient();
       SQS.resetThreadClient();
+      SES.resetThreadClient();
       AWSContextLocator.set(null);
     }
   }
