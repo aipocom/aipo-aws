@@ -20,6 +20,7 @@
 package com.aipo.aws.simpledb.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 
@@ -40,5 +41,9 @@ public class ReplaceableAttributeList extends ArrayList<ReplaceableAttribute> {
 
   public void add(String name, String value, Boolean replace) {
     add(new ReplaceableAttribute(name, value, replace));
+  }
+
+  public void add(Map.Entry<String, String> entry, Boolean replace) {
+    add(new ReplaceableAttribute(entry.getKey(), entry.getValue(), replace));
   }
 }
