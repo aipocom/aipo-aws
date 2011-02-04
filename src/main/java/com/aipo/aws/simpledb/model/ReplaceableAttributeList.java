@@ -25,7 +25,7 @@ import java.util.Map;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 
 /**
- * 
+ *
  */
 public class ReplaceableAttributeList extends ArrayList<ReplaceableAttribute> {
 
@@ -44,6 +44,8 @@ public class ReplaceableAttributeList extends ArrayList<ReplaceableAttribute> {
   }
 
   public void add(Map.Entry<String, String> entry, Boolean replace) {
-    add(new ReplaceableAttribute(entry.getKey(), entry.getValue(), replace));
+    add(new ReplaceableAttribute(entry.getKey(), entry.getValue() == null
+      ? ""
+      : entry.getValue(), replace));
   }
 }
