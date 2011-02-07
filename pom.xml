@@ -68,7 +68,6 @@
   </dependencies>
 
   <build>
-  <finalName>login</finalName>
     <resources>
       <resource>
         <filtering>false</filtering>
