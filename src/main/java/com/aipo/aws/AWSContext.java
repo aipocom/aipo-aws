@@ -20,6 +20,7 @@
 package com.aipo.aws;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
@@ -40,7 +41,8 @@ public class AWSContext implements Serializable {
 
   public static final String DEFAULT_AWSCREDENTIALS_PROPERTIES =
     new StringBuilder(System.getProperty("catalina.home")).append(
-      File.separator).append("aws/aws.properties").toString();
+      File.separator).append("aws").append(File.separator).append(
+      "aws.properties").toString();
 
   private AWSCredentials awsCredentials;
 
@@ -79,10 +81,7 @@ public class AWSContext implements Serializable {
   private void setUp(String resourcePath, ServletContext context) {
     Properties properties = new Properties();
     try {
-      InputStream resourceAsStream =
-        context == null
-          ? ClassLoader.getSystemResourceAsStream(resourcePath)
-          : context.getResourceAsStream(resourcePath);
+      InputStream resourceAsStream = new FileInputStream(resourcePath);
 
       final String key = AEBEnvironmentProperties.AWS_ACCESS_KEY_ID;
       final String secret = AEBEnvironmentProperties.AWS_SECRET_KEY;
@@ -106,10 +105,7 @@ public class AWSContext implements Serializable {
         awsCredentials = new PropertiesCredentials(resourceAsStream);
       }
 
-      resourceAsStream =
-        context == null
-          ? ClassLoader.getSystemResourceAsStream(resourcePath)
-          : context.getResourceAsStream(resourcePath);
+      resourceAsStream = new FileInputStream(resourcePath);
       try {
         properties.load(resourceAsStream);
       } finally {
