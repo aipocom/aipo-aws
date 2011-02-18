@@ -41,7 +41,7 @@ public class ELBFilter implements Filter {
   private static final Logger logger = Logger.getLogger(ELBFilter.class
     .getName());
 
-  public static final int DEFAULT_PORT = 80;
+  public static final int DEFAULT_PORT = 8080;
 
   public static final String DEFAULT_PROTOCOL = "http";
 

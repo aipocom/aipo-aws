@@ -19,6 +19,7 @@
 
 package com.aipo.aws;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
@@ -38,7 +39,8 @@ public class AWSContext implements Serializable {
   private static final long serialVersionUID = -6805584882087598678L;
 
   public static final String DEFAULT_AWSCREDENTIALS_PROPERTIES =
-    "/WEB-INF/aws.properties";
+    new StringBuilder(System.getProperty("catalina.home")).append(
+      File.separator).append("aws/aws.properties").toString();
 
   private AWSCredentials awsCredentials;
 
