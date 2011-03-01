@@ -20,7 +20,6 @@
 package com.aipo.aws.rds;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.rds.AmazonRDS;
 import com.amazonaws.services.rds.AmazonRDSClient;
 
@@ -29,29 +28,17 @@ import com.amazonaws.services.rds.AmazonRDSClient;
  */
 public class RDS {
 
-  private static ThreadLocal<AmazonRDS> rdss;
-
-  public static AmazonRDS getThreadClient() {
-    if (rdss == null) {
-      rdss = new ThreadLocal<AmazonRDS>();
+  public static AmazonRDS getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonRDS rds = rdss.get();
-    if (rds == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      rds = new AmazonRDSClient(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getRdsEndpoint();
-      if (endpoint != null && endpoint != "") {
-        rds.setEndpoint(endpoint);
-      }
-      rdss.set(rds);
+    AmazonRDS client = new AmazonRDSClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getRdsEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return rds;
-  }
-
-  public static void resetThreadClient() {
-    if (rdss != null) {
-      rdss.set(null);
-    }
+    return client;
   }
 
 }

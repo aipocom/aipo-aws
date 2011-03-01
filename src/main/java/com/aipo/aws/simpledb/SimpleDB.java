@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.Attribute;
@@ -39,31 +38,20 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  */
 public class SimpleDB {
 
-  private static ThreadLocal<AmazonSimpleDB> sdbs;
-
   public static final String DEFAULT_COUNTER_DOMAIN = "__counter";
 
-  public static AmazonSimpleDB getThreadClient() {
-    if (sdbs == null) {
-      sdbs = new ThreadLocal<AmazonSimpleDB>();
+  public static AmazonSimpleDB getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSimpleDB sdb = sdbs.get();
-    if (sdb == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      sdb = new AmazonSimpleDBClient(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getSdbEndpoint();
-      if (endpoint != null && endpoint != "") {
-        sdb.setEndpoint(endpoint);
-      }
-      sdbs.set(sdb);
+    AmazonSimpleDB client =
+      new AmazonSimpleDBClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSdbEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return sdb;
-  }
-
-  public static void resetThreadClient() {
-    if (sdbs != null) {
-      sdbs.set(null);
-    }
+    return client;
   }
 
   public static Integer counter(String domain) {
@@ -78,7 +66,7 @@ public class SimpleDB {
   }
 
   private static Integer counterJob(String domain) {
-    AmazonSimpleDB client = getThreadClient();
+    AmazonSimpleDB client = getClient();
     GetAttributesRequest getAttributesRequest = new GetAttributesRequest();
     getAttributesRequest.setDomainName(DEFAULT_COUNTER_DOMAIN);
     getAttributesRequest.setItemName(domain);

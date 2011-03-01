@@ -28,18 +28,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.aipo.aws.rds.RDS;
-import com.aipo.aws.s3.S3;
-import com.aipo.aws.ses.SES;
-import com.aipo.aws.simpledb.SimpleDB;
-import com.aipo.aws.sqs.SQS;
-
 /**
  * 
  */
 public class AWSFilter implements Filter {
-
-  private AWSContext awsContext;
 
   /**
    * @param filterConfig
@@ -47,7 +39,7 @@ public class AWSFilter implements Filter {
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    awsContext = createAWSContext(filterConfig);
+    AWSContext.createAWSContext(filterConfig.getServletContext());
   }
 
   /**
@@ -61,15 +53,8 @@ public class AWSFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
     try {
-      AWSContextLocator.set(awsContext);
       chain.doFilter(request, response);
     } finally {
-      SimpleDB.resetThreadClient();
-      S3.resetThreadClient();
-      RDS.resetThreadClient();
-      SQS.resetThreadClient();
-      SES.resetThreadClient();
-      AWSContextLocator.set(null);
     }
   }
 
@@ -78,9 +63,5 @@ public class AWSFilter implements Filter {
    */
   @Override
   public void destroy() {
-  }
-
-  protected AWSContext createAWSContext(FilterConfig filterConfig) {
-    return new AWSContext(filterConfig);
   }
 }

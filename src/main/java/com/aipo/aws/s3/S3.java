@@ -20,7 +20,6 @@
 package com.aipo.aws.s3;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
@@ -29,29 +28,17 @@ import com.amazonaws.services.s3.AmazonS3Client;
  */
 public class S3 {
 
-  private static ThreadLocal<AmazonS3> s3s;
-
-  public static AmazonS3 getThreadClient() {
-    if (s3s == null) {
-      s3s = new ThreadLocal<AmazonS3>();
+  public static AmazonS3 getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonS3 s3 = s3s.get();
-    if (s3 == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      s3 = new AmazonS3Client(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getS3Endpoint();
-      if (endpoint != null && endpoint != "") {
-        s3.setEndpoint(endpoint);
-      }
-      s3s.set(s3);
+    AmazonS3 client = new AmazonS3Client(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getS3Endpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return s3;
-  }
-
-  public static void resetThreadClient() {
-    if (s3s != null) {
-      s3s.set(null);
-    }
+    return client;
   }
 
 }

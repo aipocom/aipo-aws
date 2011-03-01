@@ -20,7 +20,6 @@
 package com.aipo.aws.sns;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 
@@ -29,29 +28,17 @@ import com.amazonaws.services.sns.AmazonSNSClient;
  */
 public class SNS {
 
-  private static ThreadLocal<AmazonSNS> snss;
-
-  public static AmazonSNS getThreadClient() {
-    if (snss == null) {
-      snss = new ThreadLocal<AmazonSNS>();
+  public static AmazonSNS getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSNS sns = snss.get();
-    if (sns == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      sns = new AmazonSNSClient(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getSnsEndpoint();
-      if (endpoint != null && endpoint != "") {
-        sns.setEndpoint(endpoint);
-      }
-      snss.set(sns);
+    AmazonSNS client = new AmazonSNSClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSnsEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return sns;
-  }
-
-  public static void resetThreadClient() {
-    if (snss != null) {
-      snss.set(null);
-    }
+    return client;
   }
 
 }

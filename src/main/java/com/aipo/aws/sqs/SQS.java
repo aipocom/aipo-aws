@@ -20,7 +20,6 @@
 package com.aipo.aws.sqs;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 
@@ -29,29 +28,16 @@ import com.amazonaws.services.sqs.AmazonSQSClient;
  */
 public class SQS {
 
-  private static ThreadLocal<AmazonSQS> sqss;
-
-  public static AmazonSQS getThreadClient() {
-    if (sqss == null) {
-      sqss = new ThreadLocal<AmazonSQS>();
+  public static AmazonSQS getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSQS sqs = sqss.get();
-    if (sqs == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      sqs = new AmazonSQSClient(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getSqsEndpoint();
-      if (endpoint != null && endpoint != "") {
-        sqs.setEndpoint(endpoint);
-      }
-      sqss.set(sqs);
+    AmazonSQS client = new AmazonSQSClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSqsEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return sqs;
+    return client;
   }
-
-  public static void resetThreadClient() {
-    if (sqss != null) {
-      sqss.set(null);
-    }
-  }
-
 }

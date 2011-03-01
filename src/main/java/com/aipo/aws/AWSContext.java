@@ -44,6 +44,12 @@ public class AWSContext implements Serializable {
       File.separator).append("aws").append(File.separator).append(
       "aws.properties").toString();
 
+  private static AWSContext instance = null;
+
+  public static AWSContext get() {
+    return instance;
+  }
+
   private AWSCredentials awsCredentials;
 
   private String sdbEndpoint;
@@ -57,6 +63,10 @@ public class AWSContext implements Serializable {
   private String snsEndpoint;
 
   private String sesEndpoint;
+
+  protected static void createAWSContext(ServletContext servletContext) {
+    instance = new AWSContext(servletContext);
+  }
 
   protected AWSContext(String resourcePath) {
     setUp(resourcePath, null);

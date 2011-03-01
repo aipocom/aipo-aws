@@ -20,7 +20,6 @@
 package com.aipo.aws.ses;
 
 import com.aipo.aws.AWSContext;
-import com.aipo.aws.AWSContextLocator;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 
@@ -29,29 +28,18 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
  */
 public class SES {
 
-  private static ThreadLocal<AmazonSimpleEmailService> sess;
-
-  public static AmazonSimpleEmailService getThreadClient() {
-    if (sess == null) {
-      sess = new ThreadLocal<AmazonSimpleEmailService>();
+  public static AmazonSimpleEmailService getClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSimpleEmailService ses = sess.get();
-    if (ses == null) {
-      AWSContext awsContext = AWSContextLocator.get();
-      ses = new AmazonSimpleEmailServiceClient(awsContext.getAwsCredentials());
-      String endpoint = awsContext.getSesEndpoint();
-      if (endpoint != null && endpoint != "") {
-        ses.setEndpoint(endpoint);
-      }
-      sess.set(ses);
+    AmazonSimpleEmailService client =
+      new AmazonSimpleEmailServiceClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSesEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
     }
-    return ses;
-  }
-
-  public static void resetThreadClient() {
-    if (sess != null) {
-      sess.set(null);
-    }
+    return client;
   }
 
 }
