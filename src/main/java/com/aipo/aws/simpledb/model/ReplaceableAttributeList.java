@@ -40,7 +40,7 @@ public class ReplaceableAttributeList extends ArrayList<ReplaceableAttribute> {
   }
 
   public void add(String name, String value, Boolean replace) {
-    add(new ReplaceableAttribute(name, value, replace));
+    add(new ReplaceableAttribute(name, value == null ? "" : value, replace));
   }
 
   public void add(Map.Entry<String, String> entry, Boolean replace) {
