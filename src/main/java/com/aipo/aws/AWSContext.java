@@ -231,10 +231,25 @@ public class AWSContext implements Serializable {
     return b.toString();
   }
 
-  public boolean isDevelopment() {
+  public String appendBacketNamespace(String value) {
+    StringBuilder b = new StringBuilder();
     String param1 = AEBEnvironmentProperties.PARAM1;
-    String prefix = getPrefix();
-    return (param1 == null || param1.length() == 0)
-      && (prefix == null || prefix.length() == 0);
+    if (param1 == null || param1.length() == 0) {
+      String prefix = getPrefix();
+      if (prefix == null || prefix.length() == 0) {
+        b.append("local.");
+        String username = System.getProperty("user.name");
+        if (username == null || username.length() == 0) {
+          username = "anon";
+        }
+        b.append(username).append(".");
+      } else {
+        b.append(prefix).append(".");
+      }
+    } else {
+      b.append(param1).append(".");
+    }
+    b.append(value);
+    return b.toString();
   }
 }
