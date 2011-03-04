@@ -64,6 +64,8 @@ public class AWSContext implements Serializable {
 
   private String sesEndpoint;
 
+  private String prefix;
+
   protected static void createAWSContext(ServletContext servletContext) {
     instance = new AWSContext(servletContext);
   }
@@ -134,6 +136,7 @@ public class AWSContext implements Serializable {
     sqsEndpoint = properties.getProperty("sqsEndpoint");
     snsEndpoint = properties.getProperty("snsEndpoint");
     sesEndpoint = properties.getProperty("sesEndpoint");
+    prefix = properties.getProperty("prefix");
   }
 
   /**
@@ -183,5 +186,55 @@ public class AWSContext implements Serializable {
    */
   public String getSesEndpoint() {
     return sesEndpoint;
+  }
+
+  public String getPrefix() {
+    return prefix;
+  }
+
+  public String appendConfigPrefix(String value) {
+    StringBuilder b = new StringBuilder();
+    String param1 = AEBEnvironmentProperties.PARAM1;
+    if (param1 == null || param1.length() == 0) {
+      String prefix = getPrefix();
+      if (prefix == null || prefix.length() == 0) {
+        b.append("local.");
+      } else {
+        b.append(param1).append(".");
+      }
+    } else {
+      b.append(param1).append(".");
+    }
+    b.append(value);
+    return b.toString();
+  }
+
+  public String appendNamespace(String value) {
+    StringBuilder b = new StringBuilder();
+    String param1 = AEBEnvironmentProperties.PARAM1;
+    if (param1 == null || param1.length() == 0) {
+      String prefix = getPrefix();
+      if (prefix == null || prefix.length() == 0) {
+        b.append("local_");
+        String username = System.getProperty("user.name");
+        if (username == null || username.length() == 0) {
+          username = "anon";
+        }
+        b.append(username).append("_");
+      } else {
+        b.append(prefix).append("_");
+      }
+    } else {
+      b.append(param1).append("_");
+    }
+    b.append(value);
+    return b.toString();
+  }
+
+  public boolean isDevelopment() {
+    String param1 = AEBEnvironmentProperties.PARAM1;
+    String prefix = getPrefix();
+    return (param1 == null || param1.length() == 0)
+      && (prefix == null || prefix.length() == 0);
   }
 }
