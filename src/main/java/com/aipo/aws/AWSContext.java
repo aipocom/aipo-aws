@@ -200,10 +200,10 @@ public class AWSContext implements Serializable {
       if (prefix == null || prefix.length() == 0) {
         b.append("local.");
       } else {
-        b.append(param1).append(".");
+        b.append(prefix).append(".");
       }
     } else {
-      b.append(prefix).append(".");
+      b.append(param1).append(".");
     }
     b.append(value);
     return b.toString();
