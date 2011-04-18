@@ -203,7 +203,7 @@ public class AWSContext implements Serializable {
         b.append(param1).append(".");
       }
     } else {
-      b.append(param1).append(".");
+      b.append(prefix).append(".");
     }
     b.append(value);
     return b.toString();
