@@ -79,6 +79,18 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
     return isELBRequest() ? remoteAddr : super.getRemoteAddr();
   }
 
+  @Override
+  public StringBuffer getRequestURL() {
+    return isELBRequest() ? new StringBuffer(protocol).append("://").append(
+      getServerName()).append((port == 443 || port == 80) ? "" : port).append(
+      getRequestURI()) : super.getRequestURL();
+  }
+
+  @Override
+  public boolean isSecure() {
+    return isELBRequest() ? "https".equals(protocol) : super.isSecure();
+  }
+
   /**
    * 
    * @return
