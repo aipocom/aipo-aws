@@ -38,16 +38,9 @@ import com.aipo.aws.elb.request.ELBHttpServletRequestWrapper;
  */
 public class ELBFilter implements Filter {
 
+  @SuppressWarnings("unused")
   private static final Logger logger = Logger.getLogger(ELBFilter.class
     .getName());
-
-  public static final int DEFAULT_PORT = 8080;
-
-  public static final String DEFAULT_PROTOCOL = "http";
-
-  private String protocol = DEFAULT_PROTOCOL;
-
-  private int port = DEFAULT_PORT;
 
   /**
    * 
@@ -79,26 +72,6 @@ public class ELBFilter implements Filter {
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
 
-    // protocol
-    String paramProtocol = filterConfig.getInitParameter("protocol");
-    if (paramProtocol != null && paramProtocol != "") {
-      if ("http".equals(paramProtocol) || "https".equals(paramProtocol)) {
-        protocol = paramProtocol;
-      } else {
-        logger.warning("init parameter [protocol] ignored.");
-      }
-    }
-
-    // port
-    String paramPort = filterConfig.getInitParameter("port");
-    if (paramPort != null && paramPort != "") {
-      try {
-        port = Integer.valueOf(paramPort);
-      } catch (Throwable ignore) {
-        logger.warning("init parameter [port] ignored.");
-      }
-    }
-
   }
 
   /**
@@ -108,6 +81,6 @@ public class ELBFilter implements Filter {
    */
   protected HttpServletRequestWrapper getHttpServletRequestWrapper(
       HttpServletRequest request) {
-    return new ELBHttpServletRequestWrapper(request, protocol, port);
+    return new ELBHttpServletRequestWrapper(request);
   }
 }

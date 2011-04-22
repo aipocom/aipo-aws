@@ -44,11 +44,37 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
     this.port = port;
 
     String header = getHeader("X-FORWARDED-FOR");
+
     if (header != null && header != "") {
       String[] split = header.split(",");
       remoteAddr = split[0];
     } else {
       remoteAddr = null;
+    }
+  }
+
+  public ELBHttpServletRequestWrapper(HttpServletRequest request) {
+    super(request);
+
+    String hfor = getHeader("X-FORWARDED-FOR");
+
+    if (hfor != null && hfor != "") {
+      String[] split = hfor.split(",");
+      remoteAddr = split[0];
+    } else {
+      remoteAddr = null;
+    }
+    String hport = getHeader("X-FORWARDED-PORT");
+    if (hfor != null && hfor != "") {
+      port = Integer.valueOf(hport);
+    } else {
+      port = -1;
+    }
+    String hhttps = getHeader("X-FORWARDED-PROTO");
+    if (hfor != null && hfor != "") {
+      protocol = hhttps;
+    } else {
+      protocol = null;
     }
   }
 
@@ -58,7 +84,7 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
    */
   @Override
   public int getServerPort() {
-    return isELBRequest() ? port : super.getServerPort();
+    return port != -1 ? port : super.getServerPort();
   }
 
   /**
@@ -67,7 +93,7 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
    */
   @Override
   public String getScheme() {
-    return isELBRequest() ? protocol : super.getScheme();
+    return protocol != null ? protocol : super.getScheme();
   }
 
   /**
@@ -81,6 +107,8 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
   @Override
   public StringBuffer getRequestURL() {
+    int port = getServerPort();
+    String protocol = getScheme();
     return isELBRequest() ? new StringBuffer(protocol).append("://").append(
       getServerName()).append((port == 443 || port == 80) ? "" : port).append(
       getRequestURI()) : super.getRequestURL();
@@ -88,7 +116,7 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
   @Override
   public boolean isSecure() {
-    return isELBRequest() ? "https".equals(protocol) : super.isSecure();
+    return protocol != null ? "https".equals(protocol) : super.isSecure();
   }
 
   /**
