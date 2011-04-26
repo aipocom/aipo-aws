@@ -65,13 +65,13 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
       remoteAddr = null;
     }
     String hport = getHeader("X-FORWARDED-PORT");
-    if (hfor != null && hfor != "") {
+    if (hport != null && hport != "") {
       port = Integer.valueOf(hport);
     } else {
       port = -1;
     }
     String hhttps = getHeader("X-FORWARDED-PROTO");
-    if (hfor != null && hfor != "") {
+    if (hhttps != null && hhttps != "") {
       protocol = hhttps;
     } else {
       protocol = null;
