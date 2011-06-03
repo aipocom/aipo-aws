@@ -7,28 +7,28 @@
  * file that was distributed with this source code.
  */
 
-package com.aipo.aws.s3;
+package com.aipo.aws.cloudwatch;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 
 /**
  * 
  */
-public class S3 {
+public class CloudWatch {
 
-  public static AmazonS3 getClient() {
+  public static AmazonCloudWatch getClient() {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonS3 client = new AmazonS3Client(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getS3Endpoint();
+    AmazonCloudWatchClient client =
+      new AmazonCloudWatchClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getCloudWatchEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
     }
     return client;
   }
-
 }

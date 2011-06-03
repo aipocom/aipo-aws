@@ -1,0 +1,6 @@
+This file is part of the com.aipo.aws package.
+Copyright (C) 2004-${year} Aimluck,Inc.
+http://www.aipo.com
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.

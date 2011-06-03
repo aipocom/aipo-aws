@@ -6,7 +6,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <aws.version>1.1.9</aws.version>
+    <aws.version>1.2.0</aws.version>
     <jetty.version>6.1.25</jetty.version>
     <slf4j.version>1.5.8</slf4j.version>
     <log4j.version>1.2.14</log4j.version>
@@ -14,7 +14,7 @@
 
   <groupId>com.aipo.aws</groupId>
   <artifactId>aipo-aws</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>aipo-aws</name>
@@ -113,6 +113,36 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <configuration>
+          <header>header.txt</header>
+          <mapping>
+            <xreg>XML_STYLE</xreg>
+            <psml>XML_STYLE</psml>
+          </mapping>
+          <includes>
+            <include>**/src/**/*.java</include>
+            <include>**/src/**/*.vm</include>
+            <include>**/src/**/*.xml</include>
+            <include>**/src/**/*.xreg</include>
+            <include>**/src/**/*.psml</include>
+            <include>**/src/**/*.jsp</include>
+            <include>**/src/**/*.xsl</include>
+            <include>**/src/**/*.properties</include>
+          </includes>
+          <encoding>UTF-8</encoding>
+          <strictCheck>true</strictCheck>
+          <skipExistingHeaders>false</skipExistingHeaders>
+          <properties>
+            <year>2011</year>
+          </properties>
+          <headerDefinitions>
+            <headerDefinition>header-definition.xml</headerDefinition>
+          </headerDefinitions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
