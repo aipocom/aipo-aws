@@ -19,9 +19,9 @@
 
   <name>aipo-aws</name>
   <description></description>
-  
+
   <repositories></repositories>
-  
+
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -30,14 +30,14 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- AWS DEPENDENCY -->
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk</artifactId>
       <version>${aws.version}</version>
     </dependency>
-    
+
     <!-- JUNIT DEPENDENCY FOR TESTING -->
     <dependency>
       <groupId>junit</groupId>
@@ -45,8 +45,8 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
-    
-    <!--  JETTY DEPENDENCIES FOR TESTING  -->
+
+    <!-- JETTY DEPENDENCIES FOR TESTING -->
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty</artifactId>
@@ -64,6 +64,19 @@
       <artifactId>jetty-management</artifactId>
       <version>${jetty.version}</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- FOR PROCESSING JAPANESE MAIL -->
+    <dependency>
+      <groupId>skmail</groupId>
+      <artifactId>skmail</artifactId>
+      <version>0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>skutility</groupId>
+      <artifactId>skutility</artifactId>
+      <version>0.5</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
@@ -153,7 +166,8 @@
           <excludes>
           </excludes>
           <additionalProjectnatures>
-            <projectnature>com.sysdeo.eclipse.tomcat.tomcatnature</projectnature>
+            <projectnature>com.sysdeo.eclipse.tomcat.tomcatnature
+            </projectnature>
           </additionalProjectnatures>
         </configuration>
       </plugin>

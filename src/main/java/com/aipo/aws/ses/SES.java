@@ -10,18 +10,33 @@
 package com.aipo.aws.ses;
 
 import java.io.UnsupportedEncodingException;
+import java.util.StringTokenizer;
+
+import javax.activation.DataHandler;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Part;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.codec.binary.Base64;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
+import com.sk_jp.io.CharCodeConverter;
+import com.sk_jp.mail.JISDataSource;
 
 /**
  *
  */
 public class SES {
 
+  /**
+   * AmazonSimpleEmailServiceを返します
+   * 
+   * @return
+   */
   public static AmazonSimpleEmailService getClient() {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
@@ -36,13 +51,94 @@ public class SES {
     return client;
   }
 
+  /**
+   * 
+   * @param name
+   * @param email
+   * @return
+   * @throws UnsupportedEncodingException
+   */
   public static String encodeSource(String name, String email)
       throws UnsupportedEncodingException {
-    return new StringBuilder("=?ISO-2022-JP?B?").append(
-      new String(Base64.encodeBase64(name.getBytes("ISO-2022-JP")))).append(
-      "?=").append(" <").append(email).append(">").toString();
+    return encodeWordJIS(name) + " <" + email + ">";
   }
 
+  /**
+   * テキストをセットします。 <br>
+   * Part#setText() の代わりにこちらを使うようにします。
+   */
+  public static void setTextContent(Part p, String s) throws MessagingException {
+    p.setDataHandler(new DataHandler(new JISDataSource(s)));
+    p.setHeader("Content-Transfer-Encoding", "7bit");
+  }
+
+  /**
+   * 日本語を含むヘッダ用テキストを生成します。 <br>
+   * 変換結果は ASCII なので、これをそのまま setSubject や InternetAddress のパラメタとして使用してください。
+   */
+  public static String encodeWordJIS(String s) {
+    try {
+      return "=?ISO-2022-JP?B?"
+        + new String(Base64
+          .encodeBase64(CharCodeConverter.sjisToJis(UnicodeCorrecter
+            .correctToCP932(s)
+            .getBytes("Windows-31J"))))
+        + "?=";
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("CANT HAPPEN");
+    }
+  }
+
+  /**
+   * 受信者を指定します。
+   * 
+   * @param msg
+   * @param recipientType
+   * @param addrString
+   * @throws AddressException
+   * @throws MessagingException
+   */
+  public static void setRecipient(Message msg,
+      Message.RecipientType recipientType, String[] addrString)
+      throws AddressException, MessagingException {
+    if (addrString == null) {
+      return;
+    }
+    int addrStringLength = addrString.length;
+    InternetAddress[] address = new InternetAddress[addrStringLength];
+    for (int i = 0; i < addrStringLength; i++) {
+      address[i] = SES.getInternetAddress(addrString[i]);
+    }
+    msg.setRecipients(recipientType, address);
+  }
+
+  /**
+   * String 型のアドレス → InternetAddress 型のアドレス に変換する．
+   * 
+   * @param addr
+   * @return
+   */
+  public static InternetAddress getInternetAddress(String addr) {
+    InternetAddress address = null;
+    StringTokenizer st = new StringTokenizer(addr, "<>");
+    int count = st.countTokens();
+    try {
+      if (count <= 0) {
+        return null;
+      } else if (count == 1) {
+        address = new InternetAddress(st.nextToken().trim());
+      } else if (count == 2) {
+        String name = st.nextToken().trim();
+        String addressStr = st.nextToken().trim();
+        address = new InternetAddress(addressStr, SES.encodeWordJIS(name));
+      }
+    } catch (Exception e) {
+      return null;
+    }
+    return address;
+  }
+
+  @Deprecated
   public static String utf8ToJIS(String input) {
     StringBuffer sb = new StringBuffer();
     char c;
