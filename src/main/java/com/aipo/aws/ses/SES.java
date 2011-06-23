@@ -58,7 +58,7 @@ public class SES {
     try {
       return "=?ISO-2022-JP?B?"
         + new String(Base64
-          .encodeBase64(CharCodeConverter.sjisToJis(UnicodeCorrecter
+          .encodeBase64(CharCodeConverter.sjisToJis(UnicodeCorrector
             .correctToCP932(s)
             .getBytes("Windows-31J"))))
         + "?=";
