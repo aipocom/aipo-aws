@@ -15,6 +15,8 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClient;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.sk_jp.io.CharCodeConverter;
 
@@ -35,6 +37,20 @@ public class SES {
     }
     AmazonSimpleEmailService client =
       new AmazonSimpleEmailServiceClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSesEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
+    }
+    return client;
+  }
+
+  public static AmazonSimpleEmailServiceAsync getAsyncClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
+    }
+    AmazonSimpleEmailServiceAsync client =
+      new AmazonSimpleEmailServiceAsyncClient(awsContext.getAwsCredentials());
     String endpoint = awsContext.getSesEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);

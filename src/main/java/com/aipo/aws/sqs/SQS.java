@@ -11,10 +11,12 @@ package com.aipo.aws.sqs;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSAsync;
+import com.amazonaws.services.sqs.AmazonSQSAsyncClient;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 
 /**
- * 
+ *
  */
 public class SQS {
 
@@ -24,6 +26,20 @@ public class SQS {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
     AmazonSQS client = new AmazonSQSClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSqsEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
+    }
+    return client;
+  }
+
+  public static AmazonSQSAsync getAsyncClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
+    }
+    AmazonSQSAsync client =
+      new AmazonSQSAsyncClient(awsContext.getAwsCredentials());
     String endpoint = awsContext.getSqsEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);

@@ -14,6 +14,8 @@ import java.util.List;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
+import com.amazonaws.services.simpledb.AmazonSimpleDBAsync;
+import com.amazonaws.services.simpledb.AmazonSimpleDBAsyncClient;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
@@ -24,7 +26,7 @@ import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 import com.amazonaws.services.simpledb.model.UpdateCondition;
 
 /**
- * 
+ *
  */
 public class SimpleDB {
 
@@ -37,6 +39,20 @@ public class SimpleDB {
     }
     AmazonSimpleDB client =
       new AmazonSimpleDBClient(awsContext.getAwsCredentials());
+    String endpoint = awsContext.getSdbEndpoint();
+    if (endpoint != null && endpoint != "") {
+      client.setEndpoint(endpoint);
+    }
+    return client;
+  }
+
+  public static AmazonSimpleDBAsync getAsyncClient() {
+    AWSContext awsContext = AWSContext.get();
+    if (awsContext == null) {
+      throw new IllegalStateException("AWSContext is not initialized.");
+    }
+    AmazonSimpleDBAsync client =
+      new AmazonSimpleDBAsyncClient(awsContext.getAwsCredentials());
     String endpoint = awsContext.getSdbEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
