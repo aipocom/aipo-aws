@@ -66,18 +66,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- FOR PROCESSING JAPANESE MAIL -->
-    <dependency>
-      <groupId>skmail</groupId>
-      <artifactId>skmail</artifactId>
-      <version>0.5</version>
-    </dependency>
-    <dependency>
-      <groupId>skutility</groupId>
-      <artifactId>skutility</artifactId>
-      <version>0.5</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
   <build>

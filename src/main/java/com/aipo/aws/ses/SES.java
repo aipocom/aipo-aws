@@ -18,7 +18,6 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClient;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.sk_jp.io.CharCodeConverter;
 
 /**
  *
@@ -73,10 +72,7 @@ public class SES {
   protected static String encodeWordJIS(String s) {
     try {
       return "=?ISO-2022-JP?B?"
-        + new String(Base64
-          .encodeBase64(CharCodeConverter.sjisToJis(UnicodeCorrector
-            .correctToCP932(s)
-            .getBytes("Windows-31J"))))
+        + new String(Base64.encodeBase64(s.getBytes("ISO-2022-JP")))
         + "?=";
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException("CANT HAPPEN");
