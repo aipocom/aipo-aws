@@ -10,6 +10,7 @@
 		<jetty.version>6.1.25</jetty.version>
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.14</log4j.version>
+		<mail.version>1.4.5</mail.version>
 	</properties>
 
 	<groupId>com.aipo.aws</groupId>
@@ -70,6 +71,11 @@
 			<artifactId>jetty-management</artifactId>
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${mail.version}</version>
 		</dependency>
 
 	</dependencies>
