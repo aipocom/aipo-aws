@@ -10,12 +10,11 @@
 package com.aipo.aws.s3;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.ClientConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 /**
- *
+ * 
  */
 public class S3 {
 
@@ -24,12 +23,7 @@ public class S3 {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-
-    ClientConfiguration configuration = new ClientConfiguration();
-    configuration.setSocketTimeout(60 * 1000 * 3);
-
-    AmazonS3 client =
-      new AmazonS3Client(awsContext.getAwsCredentials(), configuration);
+    AmazonS3 client = new AmazonS3Client(awsContext.getAwsCredentials());
     String endpoint = awsContext.getS3Endpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);

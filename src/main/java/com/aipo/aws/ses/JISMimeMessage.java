@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.activation.DataHandler;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -23,6 +24,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.amazonaws.services.simpleemail.model.RawMessage;
+import com.sk_jp.mail.JISDataSource;
 
 /**
  *
@@ -97,7 +99,7 @@ public class JISMimeMessage {
    * @throws MessagingException
    */
   public void setSubject(String subject) throws MessagingException {
-    delegate.setSubject(subject, "ISO-2022-JP");
+    delegate.setSubject(SES.encodeWordJIS(subject));
   }
 
   /**
@@ -106,7 +108,7 @@ public class JISMimeMessage {
    * @throws MessagingException
    */
   public void setTextContent(String text) throws MessagingException {
-    delegate.setText(text, "ISO-2022-JP");
+    delegate.setDataHandler(new DataHandler(new JISDataSource(text)));
     delegate.setHeader("Content-Transfer-Encoding", "7bit");
   }
 
