@@ -100,7 +100,8 @@ public class ELBHttpServletRequestWrapper extends HttpServletRequestWrapper {
     int port = getServerPort();
     String protocol = getScheme();
     return isELBRequest() ? new StringBuffer(protocol).append("://").append(
-      getServerName()).append((port == 443 || port == 80) ? "" : port).append(
+      getServerName()).append(
+      (port == 443 || port == 80) ? "" : ":" + String.valueOf(port)).append(
       getRequestURI()) : super.getRequestURL();
   }
 
