@@ -27,7 +27,6 @@ public class S3 {
 
     ClientConfiguration configuration = new ClientConfiguration();
     configuration.setSocketTimeout(60 * 1000 * 3);
-
     AmazonS3 client =
       new AmazonS3Client(awsContext.getAwsCredentials(), configuration);
     String endpoint = awsContext.getS3Endpoint();

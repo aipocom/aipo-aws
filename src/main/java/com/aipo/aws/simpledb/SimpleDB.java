@@ -21,8 +21,11 @@ import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.GetAttributesRequest;
 import com.amazonaws.services.simpledb.model.GetAttributesResult;
+import com.amazonaws.services.simpledb.model.Item;
 import com.amazonaws.services.simpledb.model.PutAttributesRequest;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
+import com.amazonaws.services.simpledb.model.SelectRequest;
+import com.amazonaws.services.simpledb.model.SelectResult;
 import com.amazonaws.services.simpledb.model.UpdateCondition;
 
 /**
@@ -60,6 +63,129 @@ public class SimpleDB {
     return client;
   }
 
+  /**
+   * 
+   * @param <M>
+   * @param rootClass
+   * @param sql
+   * @return
+   */
+  public static <M> ResultList<M> select(Class<M> rootClass, String sql) {
+    return select(getClient(), rootClass, sql, null);
+  }
+
+  /**
+   * 
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param sql
+   * @return
+   */
+  public static <M> ResultList<M> select(AmazonSimpleDB client,
+      Class<M> rootClass, String sql) {
+    return select(client, rootClass, sql, null);
+  }
+
+  /**
+   * 
+   * @param <M>
+   * @param rootClass
+   * @param sql
+   * @param nextToken
+   * @return
+   */
+  public static <M> ResultList<M> select(Class<M> rootClass, String sql,
+      String nextToken) {
+    return select(getClient(), rootClass, sql, nextToken);
+  }
+
+  /**
+   * 
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param sql
+   * @param nextToken
+   * @return
+   */
+  public static <M> ResultList<M> select(AmazonSimpleDB client,
+      Class<M> rootClass, String sql, String nextToken) {
+    try {
+
+      SelectRequest request =
+        new SelectRequest(sql.toString()).withConsistentRead(true);
+      if (nextToken != null) {
+        request.setNextToken(nextToken);
+      }
+      SelectResult select = client.select(request);
+      List<Item> items = select.getItems();
+      ResultList<M> result = new ResultList<M>();
+      for (Item item : items) {
+        M model = rootClass.newInstance();
+        if (model instanceof ResultItem) {
+          ResultItem resultItem = (ResultItem) model;
+          resultItem.assign(item);
+          result.add(model);
+        }
+      }
+      result.setNextToken(select.getNextToken());
+      return result;
+    } catch (InstantiationException e) {
+      //
+    } catch (IllegalAccessException e) {
+      //
+    }
+    return new ResultList<M>();
+  }
+
+  /**
+   * 
+   * @param <M>
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static <M> M get(Class<M> rootClass, String domain, String itemName) {
+    return get(getClient(), rootClass, domain, itemName);
+  }
+
+  /**
+   * 
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static <M> M get(AmazonSimpleDB client, Class<M> rootClass,
+      String domain, String itemName) {
+    try {
+      M model = rootClass.newInstance();
+      if (model instanceof ResultItem) {
+        GetAttributesResult result =
+          client.getAttributes(new GetAttributesRequest(domain, itemName)
+            .withConsistentRead(true));
+        ResultItem item = (ResultItem) model;
+        item.assign(itemName, result);
+      }
+      return model;
+    } catch (InstantiationException e) {
+      //
+    } catch (IllegalAccessException e) {
+      //
+    }
+
+    return null;
+  }
+
+  /**
+   * 
+   * @param domain
+   * @return
+   */
   public static Integer counter(String domain) {
     for (int i = 0; i < 5; i++) {
       try {
