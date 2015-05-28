@@ -10,11 +10,13 @@
 package com.aipo.aws.rds;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.rds.AmazonRDS;
 import com.amazonaws.services.rds.AmazonRDSClient;
 
 /**
- * 
+ *
  */
 public class RDS {
 
@@ -27,6 +29,8 @@ public class RDS {
     String endpoint = awsContext.getRdsEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }

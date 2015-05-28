@@ -10,11 +10,13 @@
 package com.aipo.aws.sns;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 
 /**
- * 
+ *
  */
 public class SNS {
 
@@ -27,6 +29,8 @@ public class SNS {
     String endpoint = awsContext.getSnsEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }

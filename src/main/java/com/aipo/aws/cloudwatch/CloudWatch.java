@@ -10,11 +10,13 @@
 package com.aipo.aws.cloudwatch;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 
 /**
- * 
+ *
  */
 public class CloudWatch {
 
@@ -28,6 +30,8 @@ public class CloudWatch {
     String endpoint = awsContext.getCloudWatchEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }

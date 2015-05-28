@@ -10,7 +10,7 @@
 package com.aipo.aws.aeb;
 
 /**
- * 
+ *
  */
 public class AEBEnvironmentProperties {
 
@@ -32,4 +32,6 @@ public class AEBEnvironmentProperties {
   public static final String PARAM4 = System.getProperty("PARAM4");
 
   public static final String PARAM5 = System.getProperty("PARAM5");
+
+  public static final String PREFIX = System.getProperty("PREFIX");
 }
