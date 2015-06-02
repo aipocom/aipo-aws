@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBAsync;
 import com.amazonaws.services.simpledb.AmazonSimpleDBAsyncClient;
@@ -45,6 +47,8 @@ public class SimpleDB {
     String endpoint = awsContext.getSdbEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }
@@ -59,12 +63,14 @@ public class SimpleDB {
     String endpoint = awsContext.getSdbEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param rootClass
    * @param sql
@@ -75,7 +81,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param client
    * @param rootClass
@@ -88,7 +94,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param rootClass
    * @param sql
@@ -101,7 +107,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param client
    * @param rootClass
@@ -140,7 +146,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param rootClass
    * @param domain
@@ -152,7 +158,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param client
    * @param rootClass
@@ -182,7 +188,7 @@ public class SimpleDB {
   }
 
   /**
-   * 
+   *
    * @param domain
    * @return
    */

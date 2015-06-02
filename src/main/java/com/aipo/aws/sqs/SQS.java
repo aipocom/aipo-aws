@@ -10,6 +10,8 @@
 package com.aipo.aws.sqs;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClient;
@@ -29,6 +31,8 @@ public class SQS {
     String endpoint = awsContext.getSqsEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }
@@ -43,6 +47,8 @@ public class SQS {
     String endpoint = awsContext.getSqsEndpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }

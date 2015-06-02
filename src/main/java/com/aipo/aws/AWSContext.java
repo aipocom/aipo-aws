@@ -20,10 +20,11 @@ import javax.servlet.ServletContext;
 
 import com.aipo.aws.aeb.AEBEnvironmentProperties;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.PropertiesCredentials;
 
 /**
- * 
+ *
  */
 public class AWSContext implements Serializable {
 
@@ -86,28 +87,7 @@ public class AWSContext implements Serializable {
     Properties properties = new Properties();
     try {
       InputStream resourceAsStream = new FileInputStream(resourcePath);
-
-      final String key = AEBEnvironmentProperties.AWS_ACCESS_KEY_ID;
-      final String secret = AEBEnvironmentProperties.AWS_SECRET_KEY;
-      if (key != null
-        && key.length() > 0
-        && secret != null
-        && secret.length() > 0) {
-        awsCredentials = new AWSCredentials() {
-
-          @Override
-          public String getAWSAccessKeyId() {
-            return key;
-          }
-
-          @Override
-          public String getAWSSecretKey() {
-            return secret;
-          }
-        };
-      } else {
-        awsCredentials = new PropertiesCredentials(resourceAsStream);
-      }
+      awsCredentials = new PropertiesCredentials(resourceAsStream);
 
       resourceAsStream = new FileInputStream(resourcePath);
       try {
@@ -118,18 +98,25 @@ public class AWSContext implements Serializable {
         } catch (Exception e) {
         }
       }
+
+      sdbEndpoint = properties.getProperty("sdbEndpoint");
+      s3Endpoint = properties.getProperty("s3Endpoint");
+      rdsEndpoint = properties.getProperty("rdsEndpoint");
+      sqsEndpoint = properties.getProperty("sqsEndpoint");
+      snsEndpoint = properties.getProperty("snsEndpoint");
+      sesEndpoint = properties.getProperty("sesEndpoint");
+      cloudWatchEndpoint = properties.getProperty("cloudWatchEndpoint");
+      prefix = properties.getProperty("prefix");
+
     } catch (Exception e) {
       System.out.println("'" + resourcePath + "' doesn't load.");
+
+      DefaultAWSCredentialsProviderChain provider =
+        new DefaultAWSCredentialsProviderChain();
+      awsCredentials = provider.getCredentials();
+      prefix = AEBEnvironmentProperties.PREFIX;
     }
 
-    sdbEndpoint = properties.getProperty("sdbEndpoint");
-    s3Endpoint = properties.getProperty("s3Endpoint");
-    rdsEndpoint = properties.getProperty("rdsEndpoint");
-    sqsEndpoint = properties.getProperty("sqsEndpoint");
-    snsEndpoint = properties.getProperty("snsEndpoint");
-    sesEndpoint = properties.getProperty("sesEndpoint");
-    cloudWatchEndpoint = properties.getProperty("cloudWatchEndpoint");
-    prefix = properties.getProperty("prefix");
   }
 
   /**
@@ -182,7 +169,7 @@ public class AWSContext implements Serializable {
   }
 
   /**
-   * 
+   *
    * @return
    */
   public String getCloudWatchEndpoint() {

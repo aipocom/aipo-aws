@@ -11,6 +11,8 @@ package com.aipo.aws.s3;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.ClientConfiguration;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 
@@ -32,6 +34,8 @@ public class S3 {
     String endpoint = awsContext.getS3Endpoint();
     if (endpoint != null && endpoint != "") {
       client.setEndpoint(endpoint);
+    } else {
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
     }
     return client;
   }
