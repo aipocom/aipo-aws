@@ -111,9 +111,7 @@ public class AWSContext implements Serializable {
     } catch (Exception e) {
       System.out.println("'" + resourcePath + "' doesn't load.");
 
-      DefaultAWSCredentialsProviderChain provider =
-        new DefaultAWSCredentialsProviderChain();
-      awsCredentials = provider.getCredentials();
+      awsCredentials = null;
       prefix = AEBEnvironmentProperties.PREFIX;
     }
 
@@ -123,6 +121,11 @@ public class AWSContext implements Serializable {
    * @return awsCredentials
    */
   public AWSCredentials getAwsCredentials() {
+    if (awsCredentials == null) {
+      DefaultAWSCredentialsProviderChain provider =
+        new DefaultAWSCredentialsProviderChain();
+      return provider.getCredentials();
+    }
     return awsCredentials;
   }
 
