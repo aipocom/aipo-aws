@@ -6,7 +6,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<aws.version>1.4.2</aws.version>
+		<aws.version>1.10.5.1</aws.version>
 		<jetty.version>6.1.25</jetty.version>
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.14</log4j.version>
@@ -15,7 +15,7 @@
 
 	<groupId>com.aipo.aws</groupId>
 	<artifactId>aipo-aws</artifactId>
-	<version>1.0.4</version>
+	<version>1.1</version>
 	<packaging>jar</packaging>
 
 	<name>aipo-aws</name>
@@ -32,18 +32,42 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- AWS DEPENDENCY -->
-		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>${aws.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.codehaus.jackson</groupId>
-					<artifactId>jackson-core-asl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- AWS DEPENDENCY --> 
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-rds</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+               <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-s3</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-ses</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-simpledb</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-sns</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-sqs</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-cloudwatch</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
 
 		<!-- JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
