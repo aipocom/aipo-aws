@@ -26,7 +26,7 @@ public class SES {
 
   /**
    * AmazonSimpleEmailServiceを返します
-   * 
+   *
    * @return
    */
   public static AmazonSimpleEmailService getClient() {
@@ -58,7 +58,7 @@ public class SES {
   }
 
   /**
-   * 
+   *
    * @param name
    * @param email
    * @return
@@ -73,6 +73,16 @@ public class SES {
     try {
       return "=?ISO-2022-JP?B?"
         + new String(Base64.encodeBase64(s.getBytes("ISO-2022-JP")))
+        + "?=";
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("CANT HAPPEN");
+    }
+  }
+
+  protected static String encodeWordUTF8(String s) {
+    try {
+      return "=?UTF-8?B?"
+        + new String(Base64.encodeBase64(s.getBytes("UTF-8")))
         + "?=";
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException("CANT HAPPEN");
