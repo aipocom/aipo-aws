@@ -64,9 +64,21 @@ public class SES {
    * @return
    * @throws UnsupportedEncodingException
    */
-  public static String encodeSource(String name, String email)
+  public static String encodeSourceJIS(String name, String email)
       throws UnsupportedEncodingException {
     return encodeWordJIS(name) + " <" + email + ">";
+  }
+
+  /**
+   *
+   * @param name
+   * @param email
+   * @return
+   * @throws UnsupportedEncodingException
+   */
+  public static String encodeSourceUTF8(String name, String email)
+      throws UnsupportedEncodingException {
+    return encodeWordUTF8(name) + " <" + email + ">";
   }
 
   protected static String encodeWordJIS(String s) {

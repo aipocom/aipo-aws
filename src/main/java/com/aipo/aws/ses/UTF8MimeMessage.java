@@ -27,7 +27,7 @@ import com.amazonaws.services.simpleemail.model.RawMessage;
 /**
  *
  */
-public class UTF8MimeMessage {
+public class UTF8MimeMessage implements ALMimeMessage {
 
   protected MimeMessage delegate = null;
 
@@ -48,6 +48,7 @@ public class UTF8MimeMessage {
    * @param from
    * @throws MessagingException
    */
+  @Override
   public void setFrom(String from) throws MessagingException {
     delegate.setFrom(new InternetAddress(from));
   }
@@ -58,10 +59,11 @@ public class UTF8MimeMessage {
    * @param from
    * @throws MessagingException
    */
+  @Override
   public void setFrom(String name, String from) throws MessagingException {
     String source = from;
     try {
-      source = SES.encodeSource(name, from);
+      source = SES.encodeSourceUTF8(name, from);
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
@@ -74,6 +76,7 @@ public class UTF8MimeMessage {
    * @param recipients
    * @throws MessagingException
    */
+  @Override
   public void setRecipients(RecipientType recipientType, String... recipients)
       throws MessagingException {
     if (recipients == null) {
@@ -96,6 +99,7 @@ public class UTF8MimeMessage {
    * @param subject
    * @throws MessagingException
    */
+  @Override
   public void setSubject(String subject) throws MessagingException {
     delegate.setSubject(subject, "UTF-8");
   }
@@ -105,6 +109,7 @@ public class UTF8MimeMessage {
    * @param text
    * @throws MessagingException
    */
+  @Override
   public void setTextContent(String text) throws MessagingException {
     delegate.setText(text, "utf-8");
     delegate.setHeader("Content-Transfer-Encoding", "base64");
@@ -114,6 +119,7 @@ public class UTF8MimeMessage {
    *
    * @return
    */
+  @Override
   public RawMessage getRawMessage() {
     RawMessage data = new RawMessage();
     ByteArrayOutputStream out = new ByteArrayOutputStream();

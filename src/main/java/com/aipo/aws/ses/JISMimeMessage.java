@@ -27,7 +27,7 @@ import com.amazonaws.services.simpleemail.model.RawMessage;
 /**
  *
  */
-public class JISMimeMessage {
+public class JISMimeMessage implements ALMimeMessage {
 
   protected MimeMessage delegate = null;
 
@@ -36,7 +36,7 @@ public class JISMimeMessage {
   }
 
   /**
-   * 
+   *
    * @param session
    */
   public JISMimeMessage(Session session) {
@@ -44,24 +44,26 @@ public class JISMimeMessage {
   }
 
   /**
-   * 
+   *
    * @param from
    * @throws MessagingException
    */
+  @Override
   public void setFrom(String from) throws MessagingException {
     delegate.setFrom(new InternetAddress(from));
   }
 
   /**
-   * 
+   *
    * @param name
    * @param from
    * @throws MessagingException
    */
+  @Override
   public void setFrom(String name, String from) throws MessagingException {
     String source = from;
     try {
-      source = SES.encodeSource(name, from);
+      source = SES.encodeSourceJIS(name, from);
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
@@ -69,11 +71,12 @@ public class JISMimeMessage {
   }
 
   /**
-   * 
+   *
    * @param recipientType
    * @param recipients
    * @throws MessagingException
    */
+  @Override
   public void setRecipients(RecipientType recipientType, String... recipients)
       throws MessagingException {
     if (recipients == null) {
@@ -92,28 +95,31 @@ public class JISMimeMessage {
   }
 
   /**
-   * 
+   *
    * @param subject
    * @throws MessagingException
    */
+  @Override
   public void setSubject(String subject) throws MessagingException {
     delegate.setSubject(subject, "ISO-2022-JP");
   }
 
   /**
-   * 
+   *
    * @param text
    * @throws MessagingException
    */
+  @Override
   public void setTextContent(String text) throws MessagingException {
     delegate.setText(text, "ISO-2022-JP");
     delegate.setHeader("Content-Transfer-Encoding", "7bit");
   }
 
   /**
-   * 
+   *
    * @return
    */
+  @Override
   public RawMessage getRawMessage() {
     RawMessage data = new RawMessage();
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -135,7 +141,7 @@ public class JISMimeMessage {
   }
 
   /**
-   * 
+   *
    * @param addr
    * @return
    * @throws AddressException
