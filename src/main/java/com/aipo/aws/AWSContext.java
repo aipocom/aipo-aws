@@ -55,6 +55,8 @@ public class AWSContext implements Serializable {
 
   private String sesEndpoint;
 
+  private String dynamodbEndpoint;
+
   private String cloudWatchEndpoint;
 
   private String prefix;
@@ -105,6 +107,7 @@ public class AWSContext implements Serializable {
       sqsEndpoint = properties.getProperty("sqsEndpoint");
       snsEndpoint = properties.getProperty("snsEndpoint");
       sesEndpoint = properties.getProperty("sesEndpoint");
+      dynamodbEndpoint = properties.getProperty("dynamodbEndpoint");
       cloudWatchEndpoint = properties.getProperty("cloudWatchEndpoint");
       prefix = properties.getProperty("prefix");
 
@@ -169,6 +172,14 @@ public class AWSContext implements Serializable {
    */
   public String getSesEndpoint() {
     return sesEndpoint;
+  }
+
+  /**
+   *
+   * @return dynamodbEndpoint
+   */
+  public String getDynamoDBEndpoint() {
+    return dynamodbEndpoint;
   }
 
   /**
