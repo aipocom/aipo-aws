@@ -17,7 +17,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 /**
  *
  */
-public class DynamoDB {
+public class AWSDynamoDB {
 
   public static AmazonDynamoDBClient getClient() {
     AWSContext awsContext = AWSContext.get();
