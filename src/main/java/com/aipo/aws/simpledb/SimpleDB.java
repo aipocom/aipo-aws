@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
@@ -35,17 +36,25 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  */
 public class SimpleDB {
 
+  private static final int CONNECTION_TIMEOUT = 10000;
+
+  private static final int SOCKET_TIMEOUT = 10000;
+
   public static final String DEFAULT_COUNTER_DOMAIN = "__counter";
 
   public static AmazonSimpleDB getClient() {
+    ClientConfiguration configuration = new ClientConfiguration();
+    configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
+    configuration.setSocketTimeout(SOCKET_TIMEOUT);
+
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
     AmazonSimpleDB client =
-      new AmazonSimpleDBClient(awsContext.getAwsCredentials());
+      new AmazonSimpleDBClient(awsContext.getAwsCredentials(), configuration);
     String endpoint = awsContext.getSdbEndpoint();
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpoint(endpoint);
     } else {
       client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
@@ -61,7 +70,7 @@ public class SimpleDB {
     AmazonSimpleDBAsync client =
       new AmazonSimpleDBAsyncClient(awsContext.getAwsCredentials());
     String endpoint = awsContext.getSdbEndpoint();
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpoint(endpoint);
     } else {
       client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
