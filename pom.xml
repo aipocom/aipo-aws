@@ -6,11 +6,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<aws.version>1.11.35</aws.version>
+		<aws.version>1.11.37</aws.version>
 		<jetty.version>6.1.26</jetty.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
 		<mail.version>1.4.5</mail.version>
+		<jodatime.version>2.8.1</jodatime.version>
 	</properties>
 
 	<groupId>com.aipo.aws</groupId>
@@ -23,6 +24,18 @@
 
 	<repositories></repositories>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-bom</artifactId>
+				<version>${aws.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -32,7 +45,18 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- AWS SDK DEPENDENCY -->
+                <dependency>
+                        <groupId>joda-time</groupId>
+                        <artifactId>joda-time</artifactId>
+                        <version>${jodatime.version}</version>
+                </dependency>
 		<!-- AWS DEPENDENCY -->
+                <dependency>
+                        <groupId>com.amazonaws</groupId>
+                        <artifactId>aws-java-sdk-core</artifactId>
+                        <version>${aws.version}</version>
+                </dependency>
                 <dependency>
                         <groupId>com.amazonaws</groupId>
                         <artifactId>aws-java-sdk-rds</artifactId>
