@@ -7,9 +7,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<aws.version>1.11.37</aws.version>
-		<jetty.version>6.1.26</jetty.version>
-		<slf4j.version>1.7.21</slf4j.version>
-		<log4j.version>1.2.17</log4j.version>
+		<jetty.version>6.1.25</jetty.version>
+		<slf4j.version>1.5.8</slf4j.version>
+		<log4j.version>1.2.14</log4j.version>
 		<mail.version>1.4.5</mail.version>
 		<jodatime.version>2.8.1</jodatime.version>
 	</properties>
@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -181,7 +181,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.26</version>
+				<version>6.1.25</version>
 			</plugin>
 			<plugin>
 				<groupId>com.mycila</groupId>
