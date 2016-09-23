@@ -21,6 +21,10 @@ import com.amazonaws.services.s3.AmazonS3Client;
  */
 public class S3 {
 
+  private static final int CONNECTION_TIMEOUT = 30000;
+
+  private static final int SOCKET_TIMEOUT = 180000;
+
   public static AmazonS3 getClient() {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
@@ -28,11 +32,13 @@ public class S3 {
     }
 
     ClientConfiguration configuration = new ClientConfiguration();
-    configuration.setSocketTimeout(60 * 1000 * 3);
+    configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
+    configuration.setSocketTimeout(SOCKET_TIMEOUT);
+
     AmazonS3 client =
       new AmazonS3Client(awsContext.getAwsCredentials(), configuration);
     String endpoint = awsContext.getS3Endpoint();
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpoint(endpoint);
     } else {
       client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
