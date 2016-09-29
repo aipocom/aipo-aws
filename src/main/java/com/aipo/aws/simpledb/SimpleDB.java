@@ -237,9 +237,12 @@ public class SimpleDB {
     }
 
     if (count == null) {
-      CreateDomainRequest createDomainRequest =
-        new CreateDomainRequest(DEFAULT_COUNTER_DOMAIN);
-      client.createDomain(createDomainRequest);
+      try {
+        CreateDomainRequest createDomainRequest =
+          new CreateDomainRequest(DEFAULT_COUNTER_DOMAIN);
+        client.createDomain(createDomainRequest);
+      } catch (Throwable t) {
+      }
       count = 0;
     }
 
