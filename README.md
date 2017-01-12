@@ -1,6 +1,6 @@
 # aipo-aws
 
-## 最新版(v1.2.0)ビルド
+## 最新版(v1.2.1)ビルド
 
 masterブランチに対して以下のコマンドを実行します。
 
@@ -9,6 +9,14 @@ mvn install
 ```
 
 ## 過去バージョンビルド
+
+### v1.2.0
+
+```sh
+git checkout -b v1.2.0 refs/tags/v1.2.0
+mvn clean
+mvn install
+```
 
 ### v1.1.1
 
