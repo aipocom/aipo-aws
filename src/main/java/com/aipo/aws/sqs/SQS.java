@@ -10,13 +10,12 @@
 package com.aipo.aws.sqs;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
-import com.amazonaws.services.sqs.AmazonSQSAsyncClient;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 
 /**
  *
@@ -28,19 +27,26 @@ public class SQS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSQS client =
-      AmazonSQSClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .build();
+
+    // AmazonSQS client =
+    // AmazonSQSClientBuilder
+    // .standard()
+    // .withCredentials(
+    // new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+    // .build();
+    AwsClientBuilder client;
 
     String endpoint = awsContext.getSqsEndpoint();
+
     if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(
+          endpoint,
+          Region.getRegion(Regions.AP_NORTHEAST_1).toString()));
     } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1).toString());
     }
+
     return client;
   }
 
@@ -49,13 +55,19 @@ public class SQS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSQSAsync client =
-      new AmazonSQSAsyncClient(awsContext.getAwsCredentials());
+
+    // AmazonSQSAsync client =
+    // new AmazonSQSAsyncClient(awsContext.getAwsCredentials());
+    AwsClientBuilder client;
+
     String endpoint = awsContext.getSqsEndpoint();
     if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(
+          endpoint,
+          Region.getRegion(Regions.AP_NORTHEAST_1).toString()));
     } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1).toString());
     }
     return client;
   }
