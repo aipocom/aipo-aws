@@ -11,6 +11,7 @@ package com.aipo.aws.simpledb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.AmazonClientException;
@@ -36,6 +37,9 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  *
  */
 public class SimpleDB {
+
+  private static final Logger logger =
+    Logger.getLogger(SimpleDB.class.getName());
 
   private static final int CONNECTION_TIMEOUT = 50 * 1000;
 
@@ -130,7 +134,7 @@ public class SimpleDB {
       try {
         resultList = selectRetry(client, rootClass, sql, nextToken);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
           break;
         }
@@ -155,8 +159,7 @@ public class SimpleDB {
    * @throws Exception
    */
   public static <M> ResultList<M> selectRetry(AmazonSimpleDB client,
-      Class<M> rootClass, String sql, String nextToken)
-      throws AmazonClientException {
+      Class<M> rootClass, String sql, String nextToken) throws Exception {
     try {
 
       SelectRequest request =
@@ -182,7 +185,7 @@ public class SimpleDB {
     } catch (IllegalAccessException e) {
       //
     } catch (AmazonClientException e) {
-      throw new AmazonClientException(e);
+      throw new Exception(e);
     }
     return new ResultList<M>();
   }
@@ -217,7 +220,7 @@ public class SimpleDB {
       try {
         model = getRetry(client, rootClass, domain, itemName);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
           break;
         }
@@ -239,9 +242,10 @@ public class SimpleDB {
    * @param domain
    * @param itemName
    * @return
+   * @throws Exception
    */
   public static <M> M getRetry(AmazonSimpleDB client, Class<M> rootClass,
-      String domain, String itemName) throws AmazonClientException {
+      String domain, String itemName) throws Exception {
     try {
       M model = rootClass.newInstance();
       if (model instanceof ResultItem) {
@@ -258,7 +262,7 @@ public class SimpleDB {
     } catch (IllegalAccessException e) {
       //
     } catch (AmazonClientException e) {
-      throw new AmazonClientException(e);
+      throw new Exception(e);
     }
 
     return null;
@@ -298,7 +302,7 @@ public class SimpleDB {
       try {
         count = countRetry(client, getAttributesRequest);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= retryCount) {
           break;
         }
@@ -320,9 +324,10 @@ public class SimpleDB {
    * @param domain
    * @param itemName
    * @return
+   * @throws Exception
    */
   public static Integer countRetry(AmazonSimpleDB client,
-      GetAttributesRequest getAttributesRequest) throws AmazonClientException {
+      GetAttributesRequest getAttributesRequest) throws Exception {
     Integer count = null;
     try {
       GetAttributesResult attributes =
@@ -339,7 +344,7 @@ public class SimpleDB {
       }
       return count;
     } catch (AmazonClientException e) {
-      throw new AmazonClientException(e);
+      throw new Exception(e);
     } catch (Throwable t) {
       t.printStackTrace();
     }
