@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -120,6 +121,29 @@ public class SimpleDB {
     return select(getClient(), rootClass, sql, nextToken);
   }
 
+  public static <M> ResultList<M> select(AmazonSimpleDB client,
+      Class<M> rootClass, String sql, String nextToken) {
+    ResultList<M> resultList = new ResultList<M>();
+    int count = 0;
+    while (true) {
+      count++;
+      try {
+        resultList = selectRetry(client, rootClass, sql, nextToken);
+        break;
+      } catch (AmazonClientException e) {
+        if (MAX_RETRY_COUNT <= count) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return resultList;
+  }
+
   /**
    *
    * @param <M>
@@ -128,9 +152,11 @@ public class SimpleDB {
    * @param sql
    * @param nextToken
    * @return
+   * @throws Exception
    */
-  public static <M> ResultList<M> select(AmazonSimpleDB client,
-      Class<M> rootClass, String sql, String nextToken) {
+  public static <M> ResultList<M> selectRetry(AmazonSimpleDB client,
+      Class<M> rootClass, String sql, String nextToken)
+      throws AmazonClientException {
     try {
 
       SelectRequest request =
@@ -155,6 +181,8 @@ public class SimpleDB {
       //
     } catch (IllegalAccessException e) {
       //
+    } catch (AmazonClientException e) {
+      throw new AmazonClientException(e);
     }
     return new ResultList<M>();
   }
