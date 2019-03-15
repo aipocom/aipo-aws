@@ -21,7 +21,7 @@
 
 	<groupId>com.aipo.aws</groupId>
 	<artifactId>aipo-aws</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<packaging>jar</packaging>
 
 	<name>aipo-aws</name>
