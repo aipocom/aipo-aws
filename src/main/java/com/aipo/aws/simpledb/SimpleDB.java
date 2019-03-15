@@ -210,6 +210,38 @@ public class SimpleDB {
    */
   public static <M> M get(AmazonSimpleDB client, Class<M> rootClass,
       String domain, String itemName) {
+    M model = null;
+    int count = 0;
+    while (true) {
+      count++;
+      try {
+        model = getRetry(client, rootClass, domain, itemName);
+        break;
+      } catch (AmazonClientException e) {
+        if (MAX_RETRY_COUNT <= count) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return model;
+  }
+
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static <M> M getRetry(AmazonSimpleDB client, Class<M> rootClass,
+      String domain, String itemName) throws AmazonClientException {
     try {
       M model = rootClass.newInstance();
       if (model instanceof ResultItem) {
@@ -225,6 +257,8 @@ public class SimpleDB {
       //
     } catch (IllegalAccessException e) {
       //
+    } catch (AmazonClientException e) {
+      throw new AmazonClientException(e);
     }
 
     return null;
@@ -246,12 +280,49 @@ public class SimpleDB {
     return null;
   }
 
-  private static Integer counterJob(String domain) {
-    AmazonSimpleDB client = getClient();
-    GetAttributesRequest getAttributesRequest = new GetAttributesRequest();
-    getAttributesRequest.setDomainName(DEFAULT_COUNTER_DOMAIN);
-    getAttributesRequest.setItemName(domain);
-    getAttributesRequest.setConsistentRead(true);
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static Integer count(AmazonSimpleDB client,
+      GetAttributesRequest getAttributesRequest) {
+    Integer count = null;
+    int retryCount = 0;
+    while (true) {
+      retryCount++;
+      try {
+        count = countRetry(client, getAttributesRequest);
+        break;
+      } catch (AmazonClientException e) {
+        if (MAX_RETRY_COUNT <= retryCount) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return count;
+  }
+
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static Integer countRetry(AmazonSimpleDB client,
+      GetAttributesRequest getAttributesRequest) throws AmazonClientException {
     Integer count = null;
     try {
       GetAttributesResult attributes =
@@ -266,6 +337,25 @@ public class SimpleDB {
           }
         }
       }
+      return count;
+    } catch (AmazonClientException e) {
+      throw new AmazonClientException(e);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+
+    return count;
+  }
+
+  private static Integer counterJob(String domain) {
+    AmazonSimpleDB client = getClient();
+    GetAttributesRequest getAttributesRequest = new GetAttributesRequest();
+    getAttributesRequest.setDomainName(DEFAULT_COUNTER_DOMAIN);
+    getAttributesRequest.setItemName(domain);
+    getAttributesRequest.setConsistentRead(true);
+    Integer count = null;
+    try {
+      count = count(client, getAttributesRequest);
     } catch (Throwable t) {
       t.printStackTrace();
     }
