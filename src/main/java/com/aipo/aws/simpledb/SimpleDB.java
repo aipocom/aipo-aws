@@ -11,8 +11,10 @@ package com.aipo.aws.simpledb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -36,9 +38,16 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  */
 public class SimpleDB {
 
-  private static final int CONNECTION_TIMEOUT = 10000;
+  private static final Logger logger =
+    Logger.getLogger(SimpleDB.class.getName());
 
-  private static final int SOCKET_TIMEOUT = 10000;
+  private static final int CONNECTION_TIMEOUT = 50 * 1000;
+
+  private static final int SOCKET_TIMEOUT = 50 * 1000;
+
+  private static final int MAX_ERROR_RETRY = 20;
+
+  private static final int MAX_RETRY_COUNT = 10;
 
   public static final String DEFAULT_COUNTER_DOMAIN = "__counter";
 
@@ -46,6 +55,7 @@ public class SimpleDB {
     ClientConfiguration configuration = new ClientConfiguration();
     configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
     configuration.setSocketTimeout(SOCKET_TIMEOUT);
+    configuration.setMaxErrorRetry(MAX_ERROR_RETRY);
 
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
@@ -115,6 +125,29 @@ public class SimpleDB {
     return select(getClient(), rootClass, sql, nextToken);
   }
 
+  public static <M> ResultList<M> select(AmazonSimpleDB client,
+      Class<M> rootClass, String sql, String nextToken) {
+    ResultList<M> resultList = new ResultList<M>();
+    int count = 0;
+    while (true) {
+      count++;
+      try {
+        resultList = selectRetry(client, rootClass, sql, nextToken);
+        break;
+      } catch (Exception e) {
+        if (MAX_RETRY_COUNT <= count) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return resultList;
+  }
+
   /**
    *
    * @param <M>
@@ -123,9 +156,10 @@ public class SimpleDB {
    * @param sql
    * @param nextToken
    * @return
+   * @throws Exception
    */
-  public static <M> ResultList<M> select(AmazonSimpleDB client,
-      Class<M> rootClass, String sql, String nextToken) {
+  public static <M> ResultList<M> selectRetry(AmazonSimpleDB client,
+      Class<M> rootClass, String sql, String nextToken) throws Exception {
     try {
 
       SelectRequest request =
@@ -150,6 +184,8 @@ public class SimpleDB {
       //
     } catch (IllegalAccessException e) {
       //
+    } catch (AmazonClientException e) {
+      throw new Exception(e);
     }
     return new ResultList<M>();
   }
@@ -177,12 +213,46 @@ public class SimpleDB {
    */
   public static <M> M get(AmazonSimpleDB client, Class<M> rootClass,
       String domain, String itemName) {
+    M model = null;
+    int count = 0;
+    while (true) {
+      count++;
+      try {
+        model = getRetry(client, rootClass, domain, itemName);
+        break;
+      } catch (Exception e) {
+        if (MAX_RETRY_COUNT <= count) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return model;
+  }
+
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   * @throws Exception
+   */
+  public static <M> M getRetry(AmazonSimpleDB client, Class<M> rootClass,
+      String domain, String itemName) throws Exception {
     try {
       M model = rootClass.newInstance();
       if (model instanceof ResultItem) {
         GetAttributesResult result =
-          client.getAttributes(new GetAttributesRequest(domain, itemName)
-            .withConsistentRead(true));
+          client.getAttributes(
+            new GetAttributesRequest(domain, itemName).withConsistentRead(
+              true));
         ResultItem item = (ResultItem) model;
         item.assign(itemName, result);
       }
@@ -191,6 +261,8 @@ public class SimpleDB {
       //
     } catch (IllegalAccessException e) {
       //
+    } catch (AmazonClientException e) {
+      throw new Exception(e);
     }
 
     return null;
@@ -212,12 +284,50 @@ public class SimpleDB {
     return null;
   }
 
-  private static Integer counterJob(String domain) {
-    AmazonSimpleDB client = getClient();
-    GetAttributesRequest getAttributesRequest = new GetAttributesRequest();
-    getAttributesRequest.setDomainName(DEFAULT_COUNTER_DOMAIN);
-    getAttributesRequest.setItemName(domain);
-    getAttributesRequest.setConsistentRead(true);
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   */
+  public static Integer count(AmazonSimpleDB client,
+      GetAttributesRequest getAttributesRequest) {
+    Integer count = null;
+    int retryCount = 0;
+    while (true) {
+      retryCount++;
+      try {
+        count = countRetry(client, getAttributesRequest);
+        break;
+      } catch (Exception e) {
+        if (MAX_RETRY_COUNT <= retryCount) {
+          break;
+        }
+        try {
+          Thread.sleep(1000L);
+        } catch (InterruptedException ie) {
+          // do nothing
+        }
+      }
+    }
+    return count;
+  }
+
+  /**
+   *
+   * @param <M>
+   * @param client
+   * @param rootClass
+   * @param domain
+   * @param itemName
+   * @return
+   * @throws Exception
+   */
+  public static Integer countRetry(AmazonSimpleDB client,
+      GetAttributesRequest getAttributesRequest) throws Exception {
     Integer count = null;
     try {
       GetAttributesResult attributes =
@@ -232,6 +342,25 @@ public class SimpleDB {
           }
         }
       }
+      return count;
+    } catch (AmazonClientException e) {
+      throw new Exception(e);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+
+    return count;
+  }
+
+  private static Integer counterJob(String domain) {
+    AmazonSimpleDB client = getClient();
+    GetAttributesRequest getAttributesRequest = new GetAttributesRequest();
+    getAttributesRequest.setDomainName(DEFAULT_COUNTER_DOMAIN);
+    getAttributesRequest.setItemName(domain);
+    getAttributesRequest.setConsistentRead(true);
+    Integer count = null;
+    try {
+      count = count(client, getAttributesRequest);
     } catch (Throwable t) {
       t.printStackTrace();
     }
