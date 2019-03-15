@@ -36,9 +36,13 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  */
 public class SimpleDB {
 
-  private static final int CONNECTION_TIMEOUT = 10000;
+  private static final int CONNECTION_TIMEOUT = 50 * 1000;
 
-  private static final int SOCKET_TIMEOUT = 10000;
+  private static final int SOCKET_TIMEOUT = 50 * 1000;
+
+  private static final int MAX_ERROR_RETRY = 20;
+
+  private static final int MAX_RETRY_COUNT = 10;
 
   public static final String DEFAULT_COUNTER_DOMAIN = "__counter";
 
@@ -46,6 +50,7 @@ public class SimpleDB {
     ClientConfiguration configuration = new ClientConfiguration();
     configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
     configuration.setSocketTimeout(SOCKET_TIMEOUT);
+    configuration.setMaxErrorRetry(MAX_ERROR_RETRY);
 
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
@@ -181,8 +186,9 @@ public class SimpleDB {
       M model = rootClass.newInstance();
       if (model instanceof ResultItem) {
         GetAttributesResult result =
-          client.getAttributes(new GetAttributesRequest(domain, itemName)
-            .withConsistentRead(true));
+          client.getAttributes(
+            new GetAttributesRequest(domain, itemName).withConsistentRead(
+              true));
         ResultItem item = (ResultItem) model;
         item.assign(itemName, result);
       }
