@@ -134,7 +134,7 @@ public class SimpleDB {
       try {
         resultList = selectRetry(client, rootClass, sql, nextToken);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
           throw e;
         }
@@ -221,7 +221,7 @@ public class SimpleDB {
       try {
         model = getRetry(client, rootClass, domain, itemName);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
           throw e;
         }
@@ -303,7 +303,7 @@ public class SimpleDB {
       try {
         count = countRetry(client, getAttributesRequest);
         break;
-      } catch (AmazonClientException e) {
+      } catch (Exception e) {
         if (MAX_RETRY_COUNT <= retryCount) {
           throw e;
         }
