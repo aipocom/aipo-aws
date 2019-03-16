@@ -136,7 +136,7 @@ public class SimpleDB {
         break;
       } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
-          break;
+          throw e;
         }
         try {
           Thread.sleep(1000L);
@@ -159,7 +159,8 @@ public class SimpleDB {
    * @throws Exception
    */
   public static <M> ResultList<M> selectRetry(AmazonSimpleDB client,
-      Class<M> rootClass, String sql, String nextToken) throws Exception {
+      Class<M> rootClass, String sql, String nextToken)
+      throws AmazonClientException {
     try {
 
       SelectRequest request =
@@ -185,7 +186,7 @@ public class SimpleDB {
     } catch (IllegalAccessException e) {
       //
     } catch (AmazonClientException e) {
-      throw new Exception(e);
+      throw new AmazonClientException(e);
     }
     return new ResultList<M>();
   }
@@ -222,7 +223,7 @@ public class SimpleDB {
         break;
       } catch (Exception e) {
         if (MAX_RETRY_COUNT <= count) {
-          break;
+          throw e;
         }
         try {
           Thread.sleep(1000L);
@@ -245,7 +246,7 @@ public class SimpleDB {
    * @throws Exception
    */
   public static <M> M getRetry(AmazonSimpleDB client, Class<M> rootClass,
-      String domain, String itemName) throws Exception {
+      String domain, String itemName) throws AmazonClientException {
     try {
       M model = rootClass.newInstance();
       if (model instanceof ResultItem) {
@@ -262,7 +263,7 @@ public class SimpleDB {
     } catch (IllegalAccessException e) {
       //
     } catch (AmazonClientException e) {
-      throw new Exception(e);
+      throw new AmazonClientException(e);
     }
 
     return null;
@@ -304,7 +305,7 @@ public class SimpleDB {
         break;
       } catch (Exception e) {
         if (MAX_RETRY_COUNT <= retryCount) {
-          break;
+          throw e;
         }
         try {
           Thread.sleep(1000L);
@@ -327,7 +328,7 @@ public class SimpleDB {
    * @throws Exception
    */
   public static Integer countRetry(AmazonSimpleDB client,
-      GetAttributesRequest getAttributesRequest) throws Exception {
+      GetAttributesRequest getAttributesRequest) throws AmazonClientException {
     Integer count = null;
     try {
       GetAttributesResult attributes =
@@ -344,7 +345,7 @@ public class SimpleDB {
       }
       return count;
     } catch (AmazonClientException e) {
-      throw new Exception(e);
+      throw new AmazonClientException(e);
     } catch (Throwable t) {
       t.printStackTrace();
     }
