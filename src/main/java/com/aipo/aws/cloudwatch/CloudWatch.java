@@ -10,10 +10,10 @@
 package com.aipo.aws.cloudwatch;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
 
 /**
  *
@@ -25,14 +25,19 @@ public class CloudWatch {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonCloudWatchClient client =
-      new AmazonCloudWatchClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getCloudWatchEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(
+        awsContext.getCloudWatchEndpoint(),
+        "ap-northeast-1");
+
+    AmazonCloudWatch client =
+      AmazonCloudWatchClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 }
