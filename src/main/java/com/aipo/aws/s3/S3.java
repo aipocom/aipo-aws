@@ -35,18 +35,22 @@ public class S3 {
     configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
     configuration.setSocketTimeout(SOCKET_TIMEOUT);
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getS3Endpoint(), "ap-northeast-1");
-
-    AmazonS3 client =
+    AmazonS3ClientBuilder client =
       AmazonS3ClientBuilder
         .standard()
         .withCredentials(
           new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .withClientConfiguration(configuration)
-        .build();
-    return client;
+        .withClientConfiguration(configuration);
+
+    String endpoint = awsContext.getS3Endpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 
 }

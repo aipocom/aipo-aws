@@ -58,17 +58,19 @@ public class SimpleDB {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSdbEndpoint(), "ap-northeast-1");
+    AmazonSimpleDBClientBuilder client =
+      AmazonSimpleDBClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSimpleDB client =
-      AmazonSimpleDBClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSdbEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 
   public static AmazonSimpleDBAsync getAsyncClient() {
@@ -77,17 +79,19 @@ public class SimpleDB {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSdbEndpoint(), "ap-northeast-1");
+    AmazonSimpleDBAsyncClientBuilder client =
+      AmazonSimpleDBAsyncClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSimpleDBAsync client =
-      AmazonSimpleDBAsyncClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSdbEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 
   /**

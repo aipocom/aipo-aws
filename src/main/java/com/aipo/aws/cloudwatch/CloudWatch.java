@@ -26,18 +26,18 @@ public class CloudWatch {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(
-        awsContext.getCloudWatchEndpoint(),
-        "ap-northeast-1");
+    AmazonCloudWatchClientBuilder client =
+      AmazonCloudWatchClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonCloudWatch client =
-      AmazonCloudWatchClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getCloudWatchEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 }

@@ -37,17 +37,18 @@ public class SES {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSesEndpoint(), "ap-northeast-1");
+    AmazonSimpleEmailServiceClientBuilder client =
+      AmazonSimpleEmailServiceClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSimpleEmailService client =
-      AmazonSimpleEmailServiceClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSesEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+    return client.build();
   }
 
   public static AmazonSimpleEmailServiceAsync getAsyncClient() {
@@ -56,17 +57,18 @@ public class SES {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSesEndpoint(), "ap-northeast-1");
+    AmazonSimpleEmailServiceAsyncClientBuilder client =
+      AmazonSimpleEmailServiceAsyncClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSimpleEmailServiceAsync client =
-      AmazonSimpleEmailServiceAsyncClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSesEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+    return client.build();
   }
 
   /**

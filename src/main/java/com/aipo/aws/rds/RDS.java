@@ -25,18 +25,19 @@ public class RDS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+    AmazonRDSClientBuilder client =
+      AmazonRDSClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getRdsEndpoint(), "ap-northeast-1");
+    String endpoint = awsContext.getRdsEndpoint();
 
-    AmazonRDS client =
-      AmazonRDSClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
 
   }
 

@@ -38,19 +38,18 @@ public class AWSDynamoDB {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+    AmazonDynamoDBClientBuilder client =
+      AmazonDynamoDBClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(
-        awsContext.getDynamoDBEndpoint(),
-        "ap-northeast-1");
-    AmazonDynamoDB client =
-      AmazonDynamoDBClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getDynamoDBEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+    return client.build();
   }
 
   public static DescribeTableResult describeTable(AmazonDynamoDBClient client,

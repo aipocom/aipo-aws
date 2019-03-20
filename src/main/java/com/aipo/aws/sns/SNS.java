@@ -26,17 +26,19 @@ public class SNS {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSnsEndpoint(), "ap-northeast-1");
+    AmazonSNSClientBuilder client =
+      AmazonSNSClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSNS client =
-      AmazonSNSClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSnsEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 
 }

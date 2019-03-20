@@ -28,17 +28,19 @@ public class SQS {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSqsEndpoint(), "ap-northeast-1");
+    AmazonSQSClientBuilder client =
+      AmazonSQSClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSQS client =
-      AmazonSQSClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSqsEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 
   public static AmazonSQSAsync getAsyncClient() {
@@ -47,16 +49,18 @@ public class SQS {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
 
-    EndpointConfiguration endpointConfiguration =
-      new EndpointConfiguration(awsContext.getSqsEndpoint(), "ap-northeast-1");
+    AmazonSQSAsyncClientBuilder client =
+      AmazonSQSAsyncClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    AmazonSQSAsync client =
-      AmazonSQSAsyncClientBuilder
-        .standard()
-        .withCredentials(
-          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
-        .withEndpointConfiguration(endpointConfiguration)
-        .build();
-    return client;
+    String endpoint = awsContext.getSqsEndpoint();
+
+    if (endpoint != null && endpoint != "") {
+      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+    } else {
+      client.setRegion("ap-northeast-1");
+    }
+
+    return client.build();
   }
 }
