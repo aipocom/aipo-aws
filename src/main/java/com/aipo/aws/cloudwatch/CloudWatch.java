@@ -34,7 +34,8 @@ public class CloudWatch {
     String endpoint = awsContext.getCloudWatchEndpoint();
 
     if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }

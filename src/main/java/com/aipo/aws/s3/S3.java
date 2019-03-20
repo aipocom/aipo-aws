@@ -46,7 +46,8 @@ public class S3 {
     String endpoint = awsContext.getS3Endpoint();
 
     if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }

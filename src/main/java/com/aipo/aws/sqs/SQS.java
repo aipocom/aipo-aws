@@ -36,7 +36,8 @@ public class SQS {
     String endpoint = awsContext.getSqsEndpoint();
 
     if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
@@ -57,7 +58,8 @@ public class SQS {
     String endpoint = awsContext.getSqsEndpoint();
 
     if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
