@@ -14,6 +14,7 @@ import java.util.List;
 import com.aipo.aws.AWSContext;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -44,10 +45,10 @@ public class AWSDynamoDB {
 
     String endpoint = awsContext.getDynamoDBEndpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
     return client.build();
   }

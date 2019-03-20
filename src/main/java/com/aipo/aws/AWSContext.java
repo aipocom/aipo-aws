@@ -31,9 +31,12 @@ public class AWSContext implements Serializable {
   private static final long serialVersionUID = -6805584882087598678L;
 
   public static final String DEFAULT_AWSCREDENTIALS_PROPERTIES =
-    new StringBuilder(System.getProperty("catalina.home")).append(
-      File.separator).append("aws").append(File.separator).append(
-      "aws.properties").toString();
+    new StringBuilder(System.getProperty("catalina.home"))
+      .append(File.separator)
+      .append("aws")
+      .append(File.separator)
+      .append("aws.properties")
+      .toString();
 
   private static AWSContext instance = null;
 
@@ -79,7 +82,7 @@ public class AWSContext implements Serializable {
 
   protected AWSContext(FilterConfig filterConfig) {
     String awsCredentialsPath = filterConfig.getInitParameter("awsCredentials");
-    if (awsCredentialsPath == null || awsCredentialsPath == "") {
+    if (awsCredentialsPath == null || "".equals(awsCredentialsPath)) {
       awsCredentialsPath = DEFAULT_AWSCREDENTIALS_PROPERTIES;
     }
     setUp(awsCredentialsPath, filterConfig.getServletContext());

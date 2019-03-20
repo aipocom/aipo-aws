@@ -16,6 +16,7 @@ import org.apache.commons.codec.binary.Base64;
 import com.aipo.aws.AWSContext;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClientBuilder;
@@ -43,10 +44,10 @@ public class SES {
 
     String endpoint = awsContext.getSesEndpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
     return client.build();
   }
@@ -63,10 +64,10 @@ public class SES {
 
     String endpoint = awsContext.getSesEndpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
     return client.build();
   }

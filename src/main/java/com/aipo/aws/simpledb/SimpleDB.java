@@ -17,6 +17,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBAsync;
 import com.amazonaws.services.simpledb.AmazonSimpleDBAsyncClientBuilder;
@@ -64,10 +65,10 @@ public class SimpleDB {
 
     String endpoint = awsContext.getSdbEndpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
 
     return client.build();
@@ -85,10 +86,10 @@ public class SimpleDB {
 
     String endpoint = awsContext.getSdbEndpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
 
     return client.build();

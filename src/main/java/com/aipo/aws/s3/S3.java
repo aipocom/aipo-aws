@@ -13,6 +13,7 @@ import com.aipo.aws.AWSContext;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
@@ -44,10 +45,10 @@ public class S3 {
 
     String endpoint = awsContext.getS3Endpoint();
 
-    if (endpoint != null && endpoint != "") {
+    if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(new EndpointConfiguration(endpoint, ""));
     } else {
-      client.setRegion("ap-northeast-1");
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
 
     return client.build();
