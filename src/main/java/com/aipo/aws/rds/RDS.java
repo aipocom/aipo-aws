@@ -10,10 +10,10 @@
 package com.aipo.aws.rds;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.rds.AmazonRDS;
-import com.amazonaws.services.rds.AmazonRDSClient;
+import com.amazonaws.services.rds.AmazonRDSClientBuilder;
 
 /**
  *
@@ -25,14 +25,19 @@ public class RDS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonRDS client = new AmazonRDSClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getRdsEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getRdsEndpoint(), "ap-northeast-1");
+
+    AmazonRDS client =
+      AmazonRDSClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
+
   }
 
 }

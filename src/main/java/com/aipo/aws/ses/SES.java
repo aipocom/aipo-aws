@@ -14,10 +14,12 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClient;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClientBuilder;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 
 /**
  *
@@ -26,7 +28,7 @@ public class SES {
 
   /**
    * AmazonSimpleEmailServiceを返します
-   * 
+   *
    * @return
    */
   public static AmazonSimpleEmailService getClient() {
@@ -34,12 +36,17 @@ public class SES {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSesEndpoint(), "ap-northeast-1");
+
     AmazonSimpleEmailService client =
-      new AmazonSimpleEmailServiceClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getSesEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    }
+      AmazonSimpleEmailServiceClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 
@@ -48,17 +55,22 @@ public class SES {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSesEndpoint(), "ap-northeast-1");
+
     AmazonSimpleEmailServiceAsync client =
-      new AmazonSimpleEmailServiceAsyncClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getSesEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    }
+      AmazonSimpleEmailServiceAsyncClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 
   /**
-   * 
+   *
    * @param name
    * @param email
    * @return

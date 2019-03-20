@@ -11,17 +11,16 @@ package com.aipo.aws.simpledb;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBAsync;
-import com.amazonaws.services.simpledb.AmazonSimpleDBAsyncClient;
-import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
+import com.amazonaws.services.simpledb.AmazonSimpleDBAsyncClientBuilder;
+import com.amazonaws.services.simpledb.AmazonSimpleDBClientBuilder;
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.GetAttributesRequest;
@@ -37,9 +36,6 @@ import com.amazonaws.services.simpledb.model.UpdateCondition;
  *
  */
 public class SimpleDB {
-
-  private static final Logger logger =
-    Logger.getLogger(SimpleDB.class.getName());
 
   private static final int CONNECTION_TIMEOUT = 50 * 1000;
 
@@ -61,14 +57,17 @@ public class SimpleDB {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSdbEndpoint(), "ap-northeast-1");
+
     AmazonSimpleDB client =
-      new AmazonSimpleDBClient(awsContext.getAwsCredentials(), configuration);
-    String endpoint = awsContext.getSdbEndpoint();
-    if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+      AmazonSimpleDBClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 
@@ -77,14 +76,17 @@ public class SimpleDB {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSdbEndpoint(), "ap-northeast-1");
+
     AmazonSimpleDBAsync client =
-      new AmazonSimpleDBAsyncClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getSdbEndpoint();
-    if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+      AmazonSimpleDBAsyncClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 

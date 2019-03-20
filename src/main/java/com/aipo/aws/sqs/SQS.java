@@ -10,12 +10,12 @@
 package com.aipo.aws.sqs;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
-import com.amazonaws.services.sqs.AmazonSQSAsyncClient;
-import com.amazonaws.services.sqs.AmazonSQSClient;
+import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 
 /**
  *
@@ -27,13 +27,17 @@ public class SQS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSQS client = new AmazonSQSClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getSqsEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSqsEndpoint(), "ap-northeast-1");
+
+    AmazonSQS client =
+      AmazonSQSClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 
@@ -42,14 +46,17 @@ public class SQS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
+
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getSqsEndpoint(), "ap-northeast-1");
+
     AmazonSQSAsync client =
-      new AmazonSQSAsyncClient(awsContext.getAwsCredentials());
-    String endpoint = awsContext.getSqsEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+      AmazonSQSAsyncClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
     return client;
   }
 }

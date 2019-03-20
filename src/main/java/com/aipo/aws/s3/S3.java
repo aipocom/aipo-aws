@@ -11,10 +11,10 @@ package com.aipo.aws.s3;
 
 import com.aipo.aws.AWSContext;
 import com.amazonaws.ClientConfiguration;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 /**
  *
@@ -35,14 +35,17 @@ public class S3 {
     configuration.setConnectionTimeout(CONNECTION_TIMEOUT);
     configuration.setSocketTimeout(SOCKET_TIMEOUT);
 
+    EndpointConfiguration endpointConfiguration =
+      new EndpointConfiguration(awsContext.getS3Endpoint(), "ap-northeast-1");
+
     AmazonS3 client =
-      new AmazonS3Client(awsContext.getAwsCredentials(), configuration);
-    String endpoint = awsContext.getS3Endpoint();
-    if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpoint(endpoint);
-    } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-    }
+      AmazonS3ClientBuilder
+        .standard()
+        .withCredentials(
+          new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()))
+        .withEndpointConfiguration(endpointConfiguration)
+        .withClientConfiguration(configuration)
+        .build();
     return client;
   }
 
