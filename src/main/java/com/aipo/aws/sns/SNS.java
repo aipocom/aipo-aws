@@ -10,10 +10,11 @@
 package com.aipo.aws.sns;
 
 import com.aipo.aws.AWSContext;
-import com.amazonaws.regions.Region;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
-import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 
 /**
  *
@@ -25,14 +26,21 @@ public class SNS {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSNS client = new AmazonSNSClient(awsContext.getAwsCredentials());
+
+    AmazonSNSClientBuilder client =
+      AmazonSNSClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
+
     String endpoint = awsContext.getSnsEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
+
+    if (endpoint != null && !"".equals(endpoint)) {
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
-      client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
-    return client;
+
+    return client.build();
   }
 
 }

@@ -14,10 +14,13 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 
 import com.aipo.aws.AWSContext;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClient;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClientBuilder;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 
 /**
  *
@@ -26,7 +29,7 @@ public class SES {
 
   /**
    * AmazonSimpleEmailServiceを返します
-   * 
+   *
    * @return
    */
   public static AmazonSimpleEmailService getClient() {
@@ -34,13 +37,20 @@ public class SES {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSimpleEmailService client =
-      new AmazonSimpleEmailServiceClient(awsContext.getAwsCredentials());
+
+    AmazonSimpleEmailServiceClientBuilder client =
+      AmazonSimpleEmailServiceClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
+
     String endpoint = awsContext.getSesEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
+
+    if (endpoint != null && !"".equals(endpoint)) {
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
+    } else {
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
-    return client;
+    return client.build();
   }
 
   public static AmazonSimpleEmailServiceAsync getAsyncClient() {
@@ -48,17 +58,24 @@ public class SES {
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
     }
-    AmazonSimpleEmailServiceAsync client =
-      new AmazonSimpleEmailServiceAsyncClient(awsContext.getAwsCredentials());
+
+    AmazonSimpleEmailServiceAsyncClientBuilder client =
+      AmazonSimpleEmailServiceAsyncClientBuilder.standard().withCredentials(
+        new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
+
     String endpoint = awsContext.getSesEndpoint();
-    if (endpoint != null && endpoint != "") {
-      client.setEndpoint(endpoint);
+
+    if (endpoint != null && !"".equals(endpoint)) {
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
+    } else {
+      client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
-    return client;
+    return client.build();
   }
 
   /**
-   * 
+   *
    * @param name
    * @param email
    * @return
