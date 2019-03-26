@@ -42,8 +42,6 @@ public class AWSDynamoDB {
       AmazonDynamoDBClientBuilder.standard().withCredentials(
         new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    // String endpoint = awsContext.getDynamoDBEndpoint();
-
     if (string != null && !"".equals(string)) {
       client.setEndpointConfiguration(new EndpointConfiguration(string, null));
     } else {
