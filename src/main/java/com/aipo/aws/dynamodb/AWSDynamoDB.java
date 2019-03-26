@@ -16,7 +16,6 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
@@ -34,7 +33,7 @@ import com.amazonaws.services.dynamodbv2.model.TableStatus;
  */
 public class AWSDynamoDB {
 
-  public static AmazonDynamoDB getClient() {
+  public static AmazonDynamoDB getClient(String string) {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
@@ -43,24 +42,23 @@ public class AWSDynamoDB {
       AmazonDynamoDBClientBuilder.standard().withCredentials(
         new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    String endpoint = awsContext.getDynamoDBEndpoint();
+    // String endpoint = awsContext.getDynamoDBEndpoint();
 
-    if (endpoint != null && !"".equals(endpoint)) {
-      client.setEndpointConfiguration(
-        new EndpointConfiguration(endpoint, null));
+    if (string != null && !"".equals(string)) {
+      client.setEndpointConfiguration(new EndpointConfiguration(string, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
     return client.build();
   }
 
-  public static DescribeTableResult describeTable(AmazonDynamoDBClient client,
+  public static DescribeTableResult describeTable(AmazonDynamoDB client,
       String tableName) {
     return client.describeTable(
       new DescribeTableRequest().withTableName(tableName));
   }
 
-  public static void setUpTable(AmazonDynamoDBClient client, String tableName,
+  public static void setUpTable(AmazonDynamoDB client, String tableName,
       List<AttributeDefinition> attributeDefinitions,
       List<KeySchemaElement> KeySchemaElements,
       ProvisionedThroughput provisionedThroughputIndex,
@@ -78,8 +76,8 @@ public class AWSDynamoDB {
   /**
    * @return StreamArn
    */
-  public static String createTable(AmazonDynamoDBClient client,
-      String tableName, List<AttributeDefinition> attributeDefinitions,
+  public static String createTable(AmazonDynamoDB client, String tableName,
+      List<AttributeDefinition> attributeDefinitions,
       List<KeySchemaElement> KeySchemaElements,
       ProvisionedThroughput provisionedThroughputIndex,
       List<GlobalSecondaryIndex> globalSecondaryIndexes) {
@@ -101,7 +99,7 @@ public class AWSDynamoDB {
 
   }
 
-  private static void awaitTableCreation(AmazonDynamoDBClient client,
+  private static void awaitTableCreation(AmazonDynamoDB client,
       String tableName) {
     Integer retries = 0;
     Boolean created = false;
