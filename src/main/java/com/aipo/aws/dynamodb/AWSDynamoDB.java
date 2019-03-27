@@ -33,7 +33,7 @@ import com.amazonaws.services.dynamodbv2.model.TableStatus;
  */
 public class AWSDynamoDB {
 
-  public static AmazonDynamoDB getClient() {
+  public static AmazonDynamoDB getClient(String parameter) {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
@@ -44,7 +44,10 @@ public class AWSDynamoDB {
 
     String endpoint = awsContext.getDynamoDBEndpoint();
 
-    if (endpoint != null && !"".equals(endpoint)) {
+    if (parameter != null && !"".equals(parameter)) {
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(parameter, null));
+    } else if (endpoint != null && !"".equals(endpoint)) {
       client.setEndpointConfiguration(
         new EndpointConfiguration(endpoint, null));
     } else {
