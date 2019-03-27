@@ -33,7 +33,7 @@ import com.amazonaws.services.dynamodbv2.model.TableStatus;
  */
 public class AWSDynamoDB {
 
-  public static AmazonDynamoDB getClient(String string) {
+  public static AmazonDynamoDB getClient() {
     AWSContext awsContext = AWSContext.get();
     if (awsContext == null) {
       throw new IllegalStateException("AWSContext is not initialized.");
@@ -42,8 +42,11 @@ public class AWSDynamoDB {
       AmazonDynamoDBClientBuilder.standard().withCredentials(
         new AWSStaticCredentialsProvider(awsContext.getAwsCredentials()));
 
-    if (string != null && !"".equals(string)) {
-      client.setEndpointConfiguration(new EndpointConfiguration(string, null));
+    String endpoint = awsContext.getDynamoDBEndpoint();
+
+    if (endpoint != null && !"".equals(endpoint)) {
+      client.setEndpointConfiguration(
+        new EndpointConfiguration(endpoint, null));
     } else {
       client.setRegion(Regions.AP_NORTHEAST_1.getName());
     }
