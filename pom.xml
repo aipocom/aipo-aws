@@ -213,6 +213,15 @@
 				</excludes>
 			</testResource>
 		</testResources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>4.0.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<inherited>true</inherited>
@@ -281,6 +290,10 @@
 					</additionalProjectnatures>
 				</configuration>
 			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
@@ -288,15 +301,14 @@
 				<configuration>
 					<assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
-	</build>
-
+	</reporting>
 </project>
