@@ -22,7 +22,7 @@
   <classpathentry kind="var" path="M2_REPO/software/amazon/ion/ion-java/1.0.1/ion-java-1.0.1.jar" sourcepath="M2_REPO/software/amazon/ion/ion-java/1.0.1/ion-java-1.0.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0.jar" sourcepath="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.9.9/jackson-core-2.9.9.jar" sourcepath="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.9.9/jackson-core-2.9.9-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.9/jackson-databind-2.9.9.jar" sourcepath="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.9/jackson-databind-2.9.9-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.10/jackson-databind-2.9.10.jar" sourcepath="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.9.10/jackson-databind-2.9.10-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.9.9/jackson-dataformat-cbor-2.9.9.jar" sourcepath="M2_REPO/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.9.9/jackson-dataformat-cbor-2.9.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty/6.1.25/jetty-6.1.25.jar" sourcepath="M2_REPO/org/mortbay/jetty/jetty/6.1.25/jetty-6.1.25-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty-management/6.1.25/jetty-management-6.1.25.jar" sourcepath="M2_REPO/org/mortbay/jetty/jetty-management/6.1.25/jetty-management-6.1.25-sources.jar"/>
