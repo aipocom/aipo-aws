@@ -7,7 +7,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<aws.version>1.11.520</aws.version>
+		<aws.version>1.12.305</aws.version>
 		<jetty.version>6.1.25</jetty.version>
 		<slf4j.version>1.5.8</slf4j.version>
 		<log4j.version>1.2.17</log4j.version>
@@ -22,7 +22,7 @@
 
 	<groupId>com.aipo.aws</groupId>
 	<artifactId>aipo-aws</artifactId>
-	<version>1.2.7</version>
+	<version>1.2.8</version>
 	<packaging>jar</packaging>
 
 	<name>aipo-aws</name>
