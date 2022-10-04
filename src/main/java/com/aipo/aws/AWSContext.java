@@ -222,10 +222,10 @@ public class AWSContext implements Serializable {
       if (prefix == null || prefix.length() == 0) {
         b.append("local_");
         String username = System.getProperty("user.name");
+        username = username.replaceAll("[-_.]", "");
         if (username == null || username.length() == 0) {
           username = "anon";
         }
-        username.replaceAll("[-_.]", "");
         b.append(username).append("_");
       } else {
         b.append(prefix).append("_");
@@ -245,7 +245,7 @@ public class AWSContext implements Serializable {
       if (prefix == null || prefix.length() == 0) {
         b.append("local.");
         String username = System.getProperty("user.name");
-        username.replaceAll("[-_.]", "");
+        username = username.replaceAll("[-_.]", "");
         if (username == null || username.length() == 0) {
           username = "anon";
         }
