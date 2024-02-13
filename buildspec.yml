@@ -1,12 +1,8 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      java: corretto8
   pre_build:
     commands:
-      - pip3 install awscli --upgrade --user
       - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain aipo --domain-owner 917255366822 --query authorizationToken --output text`
   build:
     commands:
