@@ -1,6 +1,9 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - cp ./settings.xml /root/.m2/settings.xml
   pre_build:
     commands:
       - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain aipo --domain-owner 917255366822 --query authorizationToken --output text`
@@ -18,3 +21,4 @@ artifacts:
 cache:
   paths:
     - '/root/.m2/**/*'
+    - '/root/.npm/**/*'
