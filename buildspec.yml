@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - cp ./settings.xml /root/.m2/settings.xml
-      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain $DOMAIN_OWNER --domain-owner $DOMAIN_ACCOUNT --region ap-northeast-1 --query authorizationToken --output text`
+      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain $DOMAIN_ACCOUNT --domain-owner $DOMAIN_OWNER --region ap-northeast-1 --query authorizationToken --output text`
       - echo $CODEARTIFACT_AUTH_TOKEN
   build:
     commands:
