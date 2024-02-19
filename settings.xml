@@ -4,21 +4,21 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
 <servers>
   <server>
-    <id>aipo-aipo-repo</id>
+    <id>${env.DOMAIN_ACCOUNT}-${env.DOMAIN_REPO}</id>
     <username>aws</username>
     <password>${env.CODEARTIFACT_AUTH_TOKEN}</password>
   </server>
 </servers>
 <profiles>
   <profile>
-    <id>aipo-aipo-repo</id>
+    <id>${env.DOMAIN_ACCOUNT}-${env.DOMAIN_REPO}</id>
     <activation>
       <activeByDefault>true</activeByDefault>
     </activation>
     <repositories>
       <repository>
-        <id>aipo-aipo-repo</id>
-        <url>https://aipo-917255366822.d.codeartifact.ap-northeast-1.amazonaws.com/maven/aipo-repo/</url>
+        <id>${env.DOMAIN_ACCOUNT}-${env.DOMAIN_REPO}</id>
+        <url>https://${env.DOMAIN_ACCOUNT}-${env.DOMAIN_OWNER}.d.codeartifact.ap-northeast-1.amazonaws.com/maven/${env.DOMAIN_REPO}/</url>
       </repository>
     </repositories>
   </profile>

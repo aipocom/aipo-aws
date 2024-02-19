@@ -1,20 +1,15 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - cp ./settings.xml /root/.m2/settings.xml
   pre_build:
     commands:
-      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain aipo --domain-owner 917255366822 --query authorizationToken --output text`
+      - cp ./settings.xml /root/.m2/settings.xml
+      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain $DOMAIN_OWNER --domain-owner $DOMAIN_ACCOUNT --region ap-northeast-1 --query authorizationToken --output text`
   build:
     commands:
-      - echo Build started on `date`
+      - mvn clean 
       - mvn install 
       - mvn deploy 
-  post_build:
-    commands:
-      - echo Build completed on `date`
 artifacts:
   files:
     - target/*.jar
